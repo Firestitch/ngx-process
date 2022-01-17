@@ -1,0 +1,72 @@
+{
+  "name": "@firestitch/package",
+  "title": "package.json -> Rename Title to Component Title",
+  "description": "@firestitch/package",
+  "version": "10.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Firestitch/ngx-package"
+  },
+  "author": {
+    "name": "Firestitch",
+    "email": "admin@firestitch.com"
+  },
+  "keywords": [
+    "angular"
+  ],
+  "license": "MIT",
+  "main": "package/index.js",
+  "typings": "package/index.d.ts",
+  "scripts": {
+    "package": "cd tools && npm run cli:package",
+    "package:test": "cd tools && npm run cli:package:test",
+    "package:publish": "cd tools && npm run cli:package:publish",
+    "demo:build": "cd tools && npm run cli:demo",
+    "serve": "cd tools && npm run cli:serve"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "~0.1002.0",
+    "@angular-devkit/build-ng-packagr": "~0.1002.0",
+    "@angular/animations": "^10.2.3",
+    "@angular/cdk": "^10.2.7",
+    "@angular/cli": "^10.2.0",
+    "@angular/common": "^10.2.3",
+    "@angular/compiler": "^10.2.3",
+    "@angular/compiler-cli": "^10.2.3",
+    "@angular/core": "^10.2.3",
+    "@angular/flex-layout": "^10.0.0-beta.32",
+    "@angular/forms": "^10.2.3",
+    "@angular/http": "^7.2.16",
+    "@angular/material": "^10.2.7",
+    "@angular/platform-browser": "^10.2.3",
+    "@angular/platform-browser-dynamic": "^10.2.3",
+    "@angular/router": "^10.2.3",
+    "@compodoc/compodoc": "^1.1.11",
+    "@firestitch/drawer": "^9.0.1",
+    "@firestitch/example": "^9.1.0",
+    "@firestitch/iframe": "^8.0.0",
+    "@firestitch/label": "^8.2.5",
+    "@firestitch/menu": "^9.1.3",
+    "@firestitch/message": "^8.1.0",
+    "codelyzer": "^6.0.0",
+    "cpx": "^1.5.0",
+    "hammerjs": "^2.0.8",
+    "highlight.js": "^9.18.1",
+    "lodash-es": "^4.17.15",
+    "ng-packagr": "^11.0.0",
+    "ngx-highlightjs": "^4.1.0-beta",
+    "ngx-toastr": "^12.0.0",
+    "npm-run-all": "^4.1.5",
+    "rxjs": "^6.6.0",
+    "tslint": "~6.1.0",
+    "typescript": "^3.9.7",
+    "zone.js": "~0.11.3"
+  },
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "peerDependencies": {},
+  "dependencies": {
+    "tslib": "^2.0.0"
+  }
+}

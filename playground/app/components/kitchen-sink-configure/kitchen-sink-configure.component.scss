@@ -1,0 +1,14 @@
+.configs {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.mat-form-field,
+.content {
+  width: 100%;
+}
+
+.content {
+  padding-right: 30px;
+}
