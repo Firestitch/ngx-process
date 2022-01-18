@@ -18,7 +18,7 @@ export class FsProcess {
     private _processes: FsProcesses,
   ) {}
 
-  public process(name: string, observable$: Observable<any>) {
+  public run(name: string, observable$: Observable<any>) {
     this._dialog.open(FsProcessDockComponent, {
       width: '450px',
       hasBackdrop: false,

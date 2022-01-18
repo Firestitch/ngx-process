@@ -24,7 +24,7 @@ export class KitchenSinkComponent {
   }
 
   public process(): void {
-    this._process.process('Export Accounts', 
+    this._process.run('Export Accounts', 
     of({ url: 'https://publib.boulder.ibm.com/bpcsamp/v6r1/monitoring/clipsAndTacks/download/ClipsAndTacksF1.zip' })
     .pipe(
       delay(2000), 
