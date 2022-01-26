@@ -4,4 +4,4 @@
 
 export { FsComponentModule } from './app/fs-component.module';
 
-export { FsComponentComponent } from './app/components/component/component.component';
+export { FsProcess } from './app/services/process.service';

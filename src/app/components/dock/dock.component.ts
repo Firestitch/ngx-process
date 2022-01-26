@@ -2,15 +2,17 @@
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component,
+  Component, Inject,
   OnDestroy,
   OnInit
 } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
-import { Subject, interval } from 'rxjs';
+import { Subject, interval, Observable } from 'rxjs';
 import { takeUntil, debounceTime, switchMap, map } from 'rxjs/operators';
 import { FsProcesses } from '../../services/processes.service';
+import { Process } from '../../models/process';
+import { ProcessState } from '../../enums/process-state';
 
 
 @Component({
@@ -20,7 +22,7 @@ import { FsProcesses } from '../../services/processes.service';
 })
 export class FsProcessDockComponent implements OnDestroy, OnInit {
 
-  public processes = [];
+  public processes$: Observable<Process[]>;
   public failed = 0;
   public uploaded = 0;
   public processing = 0;
@@ -35,39 +37,43 @@ export class FsProcessDockComponent implements OnDestroy, OnInit {
   public uploadLoadedBytes = 0;
   public bytesPerSecond: number[] = [];
 
+  public processStates = ProcessState;
+
   private _destroy$ = new Subject<void>();
 
   constructor(
+    @Inject(MAT_DIALOG_DATA)
+    private _dialogData: any,
     private _dialogRef: MatDialogRef<FsProcessDockComponent>,
     private _processes: FsProcesses,
     private _cdRef: ChangeDetectorRef,
   ) {
-
+    this.processes$ = _dialogData.activeProcesses$;
   }
 
   public ngOnInit(): void {
-    this._processes.processes$
-    .pipe(
-      switchMap((process) => {
-        this.processes.push(process);
-        this._cdRef.markForCheck();
-
-        return process.observable$
-        .pipe(
-          map((data) => {
-            return {
-              process,
-              data,
-            }
-          })
-        );
-      })
-    )
-    .subscribe((event: any) => {
-      if(event.data.url) {
-        window.location = event.data.url;
-      }
-    });
+    // this._processes.processes$
+    // .pipe(
+    //   switchMap((process) => {
+    //     this.processes.push(process);
+    //     this._cdRef.markForCheck();
+    //
+    //     return process.observable$
+    //     .pipe(
+    //       map((data) => {
+    //         return {
+    //           process,
+    //           data,
+    //         }
+    //       })
+    //     );
+    //   })
+    // )
+    // .subscribe((event: any) => {
+    //   if (event.data.url) {
+    //     window.location = event.data.url;
+    //   }
+    // });
   }
 
   public ngOnDestroy() {

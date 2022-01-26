@@ -5,5 +5,13 @@
 
   .name {
     flex-grow: 1;
+
+    &.killed {
+      text-decoration: line-through;
+    }
   }
+}
+
+.actions {
+  margin-left: 20px;
 }

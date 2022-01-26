@@ -1,13 +1,39 @@
 <h2 mat-dialog-title>
   Processing
 </h2>
-<mat-dialog-content> 
-  <div *ngFor="let process of processes" class="process">
-    <div class="name">{{process.name}}</div>
+<mat-dialog-content>
+  <div *ngFor="let process of processes$ | async" class="process">
+    <div class="name" [class.killed]="(process.state$ | async) === processStates.Killed">
+      {{process.name}}
+    </div>
 
-    <mat-progress-spinner
-      [diameter]="25"
-      mode="indeterminate">
-  </mat-progress-spinner>
+    <ng-container [ngSwitch]="process.state$ | async">
+      <ng-container *ngSwitchCase="processStates.Queued">
+        <mat-icon>schedule</mat-icon>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="processStates.Running">
+        <mat-progress-spinner
+          [diameter]="25"
+          mode="indeterminate">
+        </mat-progress-spinner>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="processStates.Failed">
+        <mat-icon color="accent">report_problem</mat-icon>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="processStates.Completed">
+        <mat-icon>done</mat-icon>
+      </ng-container>
+    </ng-container>
+
+    <div class="actions">
+      <ng-container *ngIf="(process.state$ | async) === processStates.Running">
+        <button mat-icon-button color="warn" (click)="process.terminate()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </ng-container>
+    </div>
   </div>
 </mat-dialog-content>

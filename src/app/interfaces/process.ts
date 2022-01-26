@@ -1,8 +1,10 @@
-import { Observable } from "rxjs";
-import { ProcessState } from "../enums";
+import { Observable } from 'rxjs';
 
-export interface Process {
+import { ProcessState } from '../enums/process-state';
+
+
+export interface IProcess {
   name?: string;
   state?: ProcessState;
-  observable$?: Observable<any>;
+  target?: Observable<unknown>;
 }
