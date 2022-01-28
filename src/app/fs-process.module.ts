@@ -22,4 +22,4 @@ import { FsProcessDockComponent } from './components/dock/dock.component';
     FsProcessDockComponent,
   ],
 })
-export class FsComponentModule {}
+export class FsProcessModule {}

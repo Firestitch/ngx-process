@@ -15,3 +15,12 @@
 .actions {
   margin-left: 20px;
 }
+
+.header {
+  display: flex;
+  align-items: baseline;
+
+  h2 {
+    flex: 1
+  }
+}

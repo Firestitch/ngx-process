@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 
 import { FsProcesses } from './processes.service';
+import { Process } from '../models/process';
 
 
 @Injectable({
@@ -18,8 +19,8 @@ export class FsProcess {
     private _processes: FsProcesses,
   ) {}
 
-  public run(name: string, target: Observable<unknown>) {
-    this._processes.addProcess({
+  public run(name: string, target: Observable<unknown>): Process {
+    return this._processes.addProcess({
       name,
       target,
     });
