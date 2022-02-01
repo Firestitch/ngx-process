@@ -1,19 +1,37 @@
 .process {
   display: flex;
   align-items: center;
-  line-height: 35px;
 
   .name {
     flex-grow: 1;
-
-    &.killed {
-      text-decoration: line-through;
-    }
+    margin-right: 10px;
   }
 }
 
-.actions {
-  margin-left: 20px;
+mat-progress-spinner {
+  margin-right: 15px;
+}
+
+.status {
+  mat-icon {
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+  }
+
+  &.F,
+  &.K {
+    mat-icon {
+      color: red;
+    }
+  }
+
+  &.C {
+    mat-icon {
+      color: green;
+    }
+  }
 }
 
 .header {

@@ -21,7 +21,7 @@ import { ProcessState } from '../../enums/process-state';
 })
 export class FsProcessDockComponent implements OnDestroy, OnInit {
 
-  public readonly timeToClose = 10;
+  public readonly timeToClose = 100000;
 
   public processes$: Observable<Process[]>;
   public failed = 0;
@@ -32,11 +32,6 @@ export class FsProcessDockComponent implements OnDestroy, OnInit {
   public queued = 0;
   public remainingSeconds: number;
   public closingPercent = 0;
-  public closingTimeout = 10;
-  public closingSeconds = null;
-  public uploadTotalBytes = 0;
-  public uploadLoadedBytes = 0;
-  public bytesPerSecond: number[] = [];
 
   public processStates = ProcessState;
 
