@@ -5,9 +5,10 @@ import { FsMessage } from '@firestitch/message';
 import { FsProcess } from '@firestitch/package';
 
 import { Observable, of } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { delay, map } from 'rxjs/operators';
 
 import { KitchenSinkConfigureComponent } from '../kitchen-sink-configure';
+import { FsProcessActionType } from '../../../../src/app/enums/process-action';
 
 
 @Component({
@@ -29,15 +30,24 @@ export class KitchenSinkComponent {
 
   public exportAccounts(): void {
     const request = of({
-      data: {
-        url: 'https://publib.boulder.ibm.com/bpcsamp/v6r1/monitoring/clipsAndTacks/download/ClipsAndTacksF1.zip',
-      }
+      url: 'https://publib.boulder.ibm.com/bpcsamp/v6r1/monitoring/clipsAndTacks/download/ClipsAndTacksF1.zip',
     });
 
     const process$ = this._process
       .run(
         'Export Accounts',
-        request.pipe(delay(4000)),
+        request.pipe(
+          delay(4000),
+          map((data: any) => {
+            return {
+              ...data,
+              _action: {
+                type: FsProcessActionType.Download,
+                url: data.url,
+              },
+            };
+          }),
+        ),
       );
 
     process$

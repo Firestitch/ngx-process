@@ -6,12 +6,12 @@ import {
   scan,
   switchMap,
   takeWhile,
-  finalize,
   map,
+  tap,
 } from 'rxjs/operators';
 
 import { Process } from '../../models/process';
-import { ProcessState } from '../../enums/process-state';
+import { FsProcessState } from '../../enums/process-state';
 
 
 @Component({
@@ -33,16 +33,18 @@ export class FsProcessDockComponent implements OnDestroy, OnInit {
   public remainingSeconds: number;
   public closingPercent = 0;
 
-  public processStates = ProcessState;
+  public processStates = FsProcessState;
 
   public readyToClose$: Observable<boolean>;
   public closeIn$ = timer(0, 1000)
     .pipe(
       scan(acc => --acc, this.timeToClose),
       takeWhile((x) => x > 0),
-      finalize(() => {
-        this._dialogRef.close();
-      })
+      tap((x) => {
+        if (x <= 1) {
+          this._dialogRef.close();
+        }
+      }),
     );
 
   private _destroy$ = new Subject<void>();
@@ -80,7 +82,7 @@ export class FsProcessDockComponent implements OnDestroy, OnInit {
             .pipe(
               map((states) => {
                 return states.every((state) => {
-                  return state !== ProcessState.Running && state !== ProcessState.Queued;
+                  return state !== FsProcessState.Running && state !== FsProcessState.Queued;
                 });
               }),
             );

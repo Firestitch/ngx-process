@@ -1,7 +1,7 @@
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { finalize, share, shareReplay } from 'rxjs/operators';
 
-import { ProcessState } from '../enums/process-state';
+import { FsProcessState } from '../enums/process-state';
 import { IProcess } from '../interfaces/process';
 
 
@@ -10,7 +10,7 @@ export class Process<T extends unknown = unknown> extends Observable<T> {
   private _terminated$ = new Subject<void>();
   public terminated$ = this._terminated$.asObservable();
 
-  private _state$ = new BehaviorSubject(ProcessState.Queued);
+  private _state$ = new BehaviorSubject(FsProcessState.Queued);
   public state$ = this._state$.pipe(shareReplay(1));
 
   private _name: string;
@@ -22,7 +22,7 @@ export class Process<T extends unknown = unknown> extends Observable<T> {
     this._init(process);
   }
 
-  public get state(): ProcessState {
+  public get state(): FsProcessState {
     return this._state$.value;
   }
 
@@ -35,13 +35,13 @@ export class Process<T extends unknown = unknown> extends Observable<T> {
   }
 
   public terminate(): void {
-    this.setState(ProcessState.Killed);
+    this.setState(FsProcessState.Killed);
 
     this._terminated$.next();
     this._terminated$.complete();
   }
 
-  public setState(state: ProcessState): void {
+  public setState(state: FsProcessState): void {
     this._state$.next(state);
   }
 

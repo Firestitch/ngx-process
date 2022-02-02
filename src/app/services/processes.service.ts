@@ -1,17 +1,18 @@
-import { Inject, Injectable } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
+import { Injectable } from '@angular/core';
 
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Overlay } from '@angular/cdk/overlay';
 
 import { BehaviorSubject, EMPTY, from, Observable, Subject } from 'rxjs';
-import { catchError, filter, mergeMap, takeUntil, tap, take } from 'rxjs/operators';
+import { catchError, mergeMap, takeUntil, tap, take } from 'rxjs/operators';
 
 
 import { IProcess } from '../interfaces/process';
 import { FsProcessDockComponent } from '../components/dock/dock.component';
-import { ProcessState } from '../enums/process-state';
+import { FsProcessState } from '../enums/process-state';
 import { Process } from '../models/process';
+import { FsProcessActionController } from './process-action-controller';
+import { IFsProcessResponse } from '../interfaces/process-response';
 
 
 @Injectable({
@@ -25,20 +26,15 @@ export class FsProcesses {
   private _queue = new Subject<Process>()
 
   public constructor(
-    @Inject(DOCUMENT)
-    private _DOCUMENT: Document,
     private _dialog: MatDialog,
     private _overlay: Overlay,
+    private _processActionController: FsProcessActionController,
   ) {
     this._initQueueProcessing();
   }
 
   private get _activeProcesses(): Process[] {
     return this._activeProcesses$.value;
-  }
-
-  private get _window(): Window {
-    return this._DOCUMENT.defaultView;
   }
 
   public addProcess(process: IProcess): Process {
@@ -48,12 +44,8 @@ export class FsProcesses {
   private _initQueueProcessing(): void {
     this._queue
       .pipe(
-        filter((process) => {
-          return !this._activeProcesses
-            .find((p) => p.name === process.name);
-        }),
         tap((process) => {
-          process.setState(ProcessState.Queued);
+          process.setState(FsProcessState.Queued);
 
           this._activeProcesses$.next([
             ...this._activeProcesses,
@@ -64,7 +56,7 @@ export class FsProcesses {
           this._openProcessesDialog();
         }),
         mergeMap((process) => {
-          process.setState(ProcessState.Running);
+          process.setState(FsProcessState.Running);
 
           return this._wrapProcessTarget(process);
         }),
@@ -108,19 +100,14 @@ export class FsProcesses {
   }
 
   private _pushProcessIntoQueue(process: IProcess): Process {
-    const existingProcess = this._processByName(process.name);
+    const p = new Process(process);
 
-    if (!existingProcess) {
-      const p = new Process(process);
+    this._queue.next(p);
 
-      this._queue.next(p);
-
-      return p;
-    } else {
-      return existingProcess;
-    }
+    return p;
   }
 
+/*
   private _removeProcessFromQueue(name: string): void {
     const activeProcesses = this._activeProcesses$.value;
     const pIdx = activeProcesses
@@ -132,25 +119,21 @@ export class FsProcesses {
       );
     }
   }
-
-  private _processByName(name: string): Process {
-    return this._activeProcesses$.value
-      .find((p) => p.name === name);
-  }
+*/
 
   private _wrapProcessTarget(process: Process): Observable<unknown> {
     return from(process.target)
       .pipe(
         tap(() => {
-          process.setState(ProcessState.Completed);
+          process.setState(FsProcessState.Completed);
         }),
-        tap((response: any) => {
-          if (response.data?.url) {
-            this._window.open(response.data?.url, '_blank');
+        tap((response: IFsProcessResponse | unknown) => {
+          if ((response as IFsProcessResponse)?._action) {
+            this._processActionController.perform(response as IFsProcessResponse);
           }
         }),
         catchError((e) => {
-          process.setState(ProcessState.Failed);
+          process.setState(FsProcessState.Failed);
 
           return e;
         }),

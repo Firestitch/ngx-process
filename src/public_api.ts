@@ -8,6 +8,6 @@ export { FsProcess } from './app/services/process.service';
 
 export { IProcess } from './app/interfaces/process';
 
-export { ProcessState } from './app/enums/process-state';
+export { FsProcessState } from './app/enums/process-state';
 
 export { Process } from './app/models/process';
