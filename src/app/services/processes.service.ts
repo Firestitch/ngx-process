@@ -9,10 +9,10 @@ import { catchError, mergeMap, takeUntil, tap, take } from 'rxjs/operators';
 
 import { IProcess } from '../interfaces/process';
 import { FsProcessDockComponent } from '../components/dock/dock.component';
-import { FsProcessState } from '../enums/process-state';
+import { ProcessState } from '../enums/process-state';
 import { Process } from '../models/process';
 import { FsProcessActionController } from './process-action-controller';
-import { IFsProcessResponse } from '../interfaces/process-response';
+import { IProcessResponse } from '../interfaces/process-response';
 
 
 @Injectable({
@@ -45,7 +45,7 @@ export class FsProcesses {
     this._queue
       .pipe(
         tap((process) => {
-          process.setState(FsProcessState.Queued);
+          process.setState(ProcessState.Queued);
 
           this._activeProcesses$.next([
             ...this._activeProcesses,
@@ -56,7 +56,7 @@ export class FsProcesses {
           this._openProcessesDialog();
         }),
         mergeMap((process) => {
-          process.setState(FsProcessState.Running);
+          process.setState(ProcessState.Running);
 
           return this._wrapProcessTarget(process);
         }),
@@ -125,15 +125,15 @@ export class FsProcesses {
     return from(process.target)
       .pipe(
         tap(() => {
-          process.setState(FsProcessState.Completed);
+          process.setState(ProcessState.Completed);
         }),
-        tap((response: IFsProcessResponse | unknown) => {
-          if ((response as IFsProcessResponse)?._action) {
-            this._processActionController.perform(response as IFsProcessResponse);
+        tap((response: IProcessResponse | unknown) => {
+          if (response as IProcessResponse) {
+            this._processActionController.perform(response as IProcessResponse);
           }
         }),
         catchError((e) => {
-          process.setState(FsProcessState.Failed);
+          process.setState(ProcessState.Failed);
 
           return e;
         }),

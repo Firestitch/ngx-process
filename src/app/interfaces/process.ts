@@ -1,10 +1,9 @@
 import { Observable } from 'rxjs';
 
-import { FsProcessState } from '../enums/process-state';
-
+import { ProcessState } from '../enums/process-state';
 
 export interface IProcess {
   name?: string;
-  state?: FsProcessState;
+  state?: ProcessState;
   target?: Observable<unknown>;
 }

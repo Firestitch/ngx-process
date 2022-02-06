@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 
 import { FsProcesses } from './processes.service';
 import { Process } from '../models/process';
-import { IFsProcessResponse } from '../interfaces/process-response';
+import { IProcessResponse } from '../interfaces/process-response';
 
 
 @Injectable({
@@ -20,7 +20,7 @@ export class FsProcess {
     private _processes: FsProcesses,
   ) {}
 
-  public run(name: string, target: Observable<IFsProcessResponse | unknown>): Process {
+  public run(name: string, target: Observable<IProcessResponse>): Process {
     return this._processes.addProcess({
       name,
       target,

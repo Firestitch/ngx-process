@@ -1,6 +1,14 @@
-import { FsProcessAction } from './process-action';
+import { ProcessAction } from '../enums/process-action';
 
-export interface IFsProcessResponse {
-  [key: string]: unknown;
-  _action?: FsProcessAction;
+export interface IProcessResponse {
+  action: ProcessAction;
+
+}
+
+export interface IProcessResponseNone extends IProcessResponse {
+
+}
+
+export interface IProcessResponseDownload extends IProcessResponse {
+  url: string;
 }

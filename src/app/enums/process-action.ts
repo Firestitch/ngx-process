@@ -1,3 +1,4 @@
-export enum FsProcessActionType {
+export enum ProcessAction {
   Download = 'download',
+  None = 'none',
 }

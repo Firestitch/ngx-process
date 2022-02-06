@@ -11,7 +11,7 @@ import {
 } from 'rxjs/operators';
 
 import { Process } from '../../models/process';
-import { FsProcessState } from '../../enums/process-state';
+import { ProcessState } from '../../enums/process-state';
 
 
 @Component({
@@ -21,7 +21,7 @@ import { FsProcessState } from '../../enums/process-state';
 })
 export class FsProcessDockComponent implements OnDestroy, OnInit {
 
-  public readonly timeToClose = 100000;
+  public readonly timeToClose = 10;
 
   public processes$: Observable<Process[]>;
   public failed = 0;
@@ -33,7 +33,7 @@ export class FsProcessDockComponent implements OnDestroy, OnInit {
   public remainingSeconds: number;
   public closingPercent = 0;
 
-  public processStates = FsProcessState;
+  public processStates = ProcessState;
 
   public readyToClose$: Observable<boolean>;
   public closeIn$ = timer(0, 1000)
@@ -82,7 +82,7 @@ export class FsProcessDockComponent implements OnDestroy, OnInit {
             .pipe(
               map((states) => {
                 return states.every((state) => {
-                  return state !== FsProcessState.Running && state !== FsProcessState.Queued;
+                  return state !== ProcessState.Running && state !== ProcessState.Queued;
                 });
               }),
             );

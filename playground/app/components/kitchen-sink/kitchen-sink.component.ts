@@ -2,13 +2,12 @@ import { Component } from '@angular/core';
 
 import { FsExampleComponent } from '@firestitch/example';
 import { FsMessage } from '@firestitch/message';
-import { FsProcess } from '@firestitch/package';
+import { FsProcess, ProcessAction, IProcessResponse } from '@firestitch/package';
 
 import { Observable, of } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
 
 import { KitchenSinkConfigureComponent } from '../kitchen-sink-configure';
-import { FsProcessActionType } from '../../../../src/app/enums/process-action';
 
 
 @Component({
@@ -39,13 +38,11 @@ export class KitchenSinkComponent {
         request.pipe(
           delay(4000),
           map((data: any) => {
-            return {
-              ...data,
-              _action: {
-                type: FsProcessActionType.Download,
-                url: data.url,
-              },
-            };
+            return (
+              {
+              action: ProcessAction.Download,
+              url: data.url,
+            });
           }),
         ),
       );
@@ -66,7 +63,12 @@ export class KitchenSinkComponent {
 
     this._process.run(
       'Drop Database',
-      request.pipe(delay(40000)),
+      request.pipe(
+        delay(10000),
+        map((data: any) => {
+          return ({ action: ProcessAction.None });
+        }),        
+      ),
     );
   }
 
@@ -75,7 +77,12 @@ export class KitchenSinkComponent {
 
     this._process.run(
       'Charge Bank Account',
-      request.pipe(delay(2000)),
+      request.pipe(
+        delay(2000),
+        map((data: any) => {
+          return ({ action: ProcessAction.None });
+        }),         
+      ),
     );
   }
 
@@ -84,7 +91,11 @@ export class KitchenSinkComponent {
       setTimeout(() => {
         obs.error('Error')
       }, 2000);
-    });
+    }).pipe(
+      map((data: any) => {
+        return ({ action: ProcessAction.None });
+      }),
+    );
 
     const process$ = this._process.run('Error in 2 sec', obs$);
 

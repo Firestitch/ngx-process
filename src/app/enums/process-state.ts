@@ -1,4 +1,4 @@
-export enum FsProcessState {
+export enum ProcessState {
   Running = 'R',
   Deleted = 'D',
   Queued = 'Q',
