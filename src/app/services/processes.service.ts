@@ -11,8 +11,7 @@ import { IProcess } from '../interfaces/process';
 import { FsProcessDockComponent } from '../components/dock/dock.component';
 import { ProcessState } from '../enums/process-state';
 import { Process } from '../models/process';
-import { FsProcessActionController } from './process-action-controller';
-import { IProcessResponse } from '../interfaces/process-response';
+import { ProcessType } from '../enums/process-type';
 
 
 @Injectable({
@@ -28,7 +27,6 @@ export class FsProcesses {
   public constructor(
     private _dialog: MatDialog,
     private _overlay: Overlay,
-    private _processActionController: FsProcessActionController,
   ) {
     this._initQueueProcessing();
   }
@@ -101,25 +99,10 @@ export class FsProcesses {
 
   private _pushProcessIntoQueue(process: IProcess): Process {
     const p = new Process(process);
-
     this._queue.next(p);
 
     return p;
   }
-
-/*
-  private _removeProcessFromQueue(name: string): void {
-    const activeProcesses = this._activeProcesses$.value;
-    const pIdx = activeProcesses
-      .findIndex((p) => p.name == name);
-
-    if (pIdx > -1) {
-      this._activeProcesses$.next(
-        activeProcesses.filter((_, index) => index !== pIdx)
-      );
-    }
-  }
-*/
 
   private _wrapProcessTarget(process: Process): Observable<unknown> {
     return from(process.target)
@@ -127,9 +110,9 @@ export class FsProcesses {
         tap(() => {
           process.setState(ProcessState.Completed);
         }),
-        tap((response: IProcessResponse | unknown) => {
-          if (response as IProcessResponse) {
-            this._processActionController.perform(response as IProcessResponse);
+        tap((response: string | any) => {
+          if (process.type === ProcessType.Download) {
+            (window as any).location = response;
           }
         }),
         catchError((e) => {

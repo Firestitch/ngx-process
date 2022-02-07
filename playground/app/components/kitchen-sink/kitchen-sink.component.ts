@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 import { FsExampleComponent } from '@firestitch/example';
 import { FsMessage } from '@firestitch/message';
-import { FsProcess, ProcessAction, IProcessResponse } from '@firestitch/package';
+import { FsProcess } from '@firestitch/package';
 
 import { Observable, of } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
@@ -33,16 +33,12 @@ export class KitchenSinkComponent {
     });
 
     const process$ = this._process
-      .run(
+      .download(
         'Export Accounts',
         request.pipe(
           delay(4000),
           map((data: any) => {
-            return (
-              {
-              action: ProcessAction.Download,
-              url: data.url,
-            });
+            return data.url;
           }),
         ),
       );
@@ -64,10 +60,7 @@ export class KitchenSinkComponent {
     this._process.run(
       'Drop Database',
       request.pipe(
-        delay(10000),
-        map((data: any) => {
-          return ({ action: ProcessAction.None });
-        }),        
+        delay(10000),        
       ),
     );
   }
@@ -78,10 +71,7 @@ export class KitchenSinkComponent {
     this._process.run(
       'Charge Bank Account',
       request.pipe(
-        delay(2000),
-        map((data: any) => {
-          return ({ action: ProcessAction.None });
-        }),         
+        delay(2000),        
       ),
     );
   }
@@ -91,11 +81,7 @@ export class KitchenSinkComponent {
       setTimeout(() => {
         obs.error('Error')
       }, 2000);
-    }).pipe(
-      map((data: any) => {
-        return ({ action: ProcessAction.None });
-      }),
-    );
+    });
 
     const process$ = this._process.run('Error in 2 sec', obs$);
 

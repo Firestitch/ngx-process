@@ -3,7 +3,7 @@
     Processing
   </h2>
 
-  <span *ngIf="readyToClose$ | async">
+  <span *ngIf="timeToClose && readyToClose$ | async" class="closing">
     Closing in {{ closeIn$ | async }} sec
   </span>
 

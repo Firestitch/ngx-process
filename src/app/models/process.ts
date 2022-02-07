@@ -2,6 +2,7 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { finalize, share, shareReplay } from 'rxjs/operators';
 
 import { ProcessState } from '../enums/process-state';
+import { ProcessType } from '../enums/process-type';
 import { IProcess } from '../interfaces/process';
 
 
@@ -14,6 +15,7 @@ export class Process<T extends unknown = unknown> extends Observable<T> {
   public state$ = this._state$.pipe(shareReplay(1));
 
   private _name: string;
+  private _type: ProcessType;
   private _target: Observable<unknown>;
 
   constructor(process: IProcess) {
@@ -28,6 +30,10 @@ export class Process<T extends unknown = unknown> extends Observable<T> {
 
   public get name(): string {
     return this._name;
+  }
+
+  public get type(): ProcessType {
+    return this._type;
   }
 
   public get target(): Observable<unknown> {
@@ -47,6 +53,7 @@ export class Process<T extends unknown = unknown> extends Observable<T> {
 
   private _init(process: IProcess) {
     this._name = process.name;
+    this._type = process.type;
     this._target = process.target
       .pipe(
         share(),

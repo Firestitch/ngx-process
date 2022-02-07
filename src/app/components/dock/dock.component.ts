@@ -21,8 +21,6 @@ import { ProcessState } from '../../enums/process-state';
 })
 export class FsProcessDockComponent implements OnDestroy, OnInit {
 
-  public readonly timeToClose = 10;
-
   public processes$: Observable<Process[]>;
   public failed = 0;
   public uploaded = 0;
@@ -32,6 +30,7 @@ export class FsProcessDockComponent implements OnDestroy, OnInit {
   public queued = 0;
   public remainingSeconds: number;
   public closingPercent = 0;
+  public timeToClose = 10;
 
   public processStates = ProcessState;
 
@@ -80,6 +79,15 @@ export class FsProcessDockComponent implements OnDestroy, OnInit {
 
           return combineLatest(processesState)
             .pipe(
+              tap((states) => {
+                const failed = states.some((state) => {
+                  return state === ProcessState.Failed;
+                });
+
+                if(failed) {
+                  this.timeToClose = 0;
+                }
+              }),
               map((states) => {
                 return states.every((state) => {
                   return state !== ProcessState.Running && state !== ProcessState.Queued;
