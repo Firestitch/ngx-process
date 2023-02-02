@@ -13,39 +13,50 @@
 </div>
 
 <mat-dialog-content>
-  <div *ngFor="let process of processes$ | async" class="process">
+  <ng-container *ngFor="let process of processes$ | async">
+    <div       
+        class="process" 
+        [ngClass]="process.state">
+      <div class="message">
+        {{process.message$ | async}}
+      </div>
+      <div class="status">
+        <ng-container [ngSwitch]="process.state">
+          <ng-container *ngSwitchCase="ProcessState.Failed">
+            <mat-icon [matTooltip]="'Failed'">report_problem</mat-icon>
+          </ng-container>
 
-    <ng-container *ngIf="(process.state$ | async) === processStates.Running">
-      <mat-progress-spinner
-        [diameter]="25"
-        mode="indeterminate">
-      </mat-progress-spinner>
-    </ng-container>
+          <ng-container *ngSwitchCase="ProcessState.Success">
+            <mat-icon [matTooltip]="'Complete'">done</mat-icon>
+          </ng-container>
 
-    <div class="name" [class.killed]="(process.state$ | async) === processStates.Killed">
-      {{process.name}}
-    </div>
-
-    <div class="status" [ngClass]="process.state$ | async">
-      <ng-container [ngSwitch]="process.state$ | async">
-        <ng-container *ngSwitchCase="processStates.Failed">
-          <mat-icon matTooltip="Failed">report_problem</mat-icon>
-        </ng-container>
-
-        <ng-container *ngSwitchCase="processStates.Completed">
-          <mat-icon matTooltip="Complete">done</mat-icon>
-        </ng-container>
-
-        <ng-container *ngSwitchCase="processStates.Killed">
-          <mat-icon matTooltip="Killed">done</mat-icon>
+          <ng-container *ngSwitchCase="ProcessState.Cancelled">
+            <mat-icon 
+                class="cancel"
+                [matTooltip]="'Cancelled'">
+              report_problem
+            </mat-icon>
+          </ng-container> 
         </ng-container> 
-      </ng-container> 
+      </div>
+      <ng-container *ngIf="process.state === ProcessState.Running">
+        <div class="action">
+          <div class="spinner">
+            <mat-progress-spinner
+              [diameter]="25"
+              mode="indeterminate">
+            </mat-progress-spinner>
+          </div>
+          <button 
+              type="button"  
+              class="cancel"
+              mat-icon-button 
+              (click)="process.cancel()" 
+              [matTooltip]="'Cancel'">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </div>
+      </ng-container>
     </div>
-
-    <ng-container *ngIf="(process.state$ | async) === processStates.Running">
-      <button mat-icon-button (click)="process.terminate()" matTooltip="Cancel">
-        <mat-icon>cancel</mat-icon>
-      </button>
-    </ng-container>
-  </div>
+  </ng-container>
 </mat-dialog-content>

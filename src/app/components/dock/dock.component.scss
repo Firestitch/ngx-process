@@ -1,35 +1,70 @@
 .process {
   display: flex;
   align-items: center;
+  min-height: 40px;
+  padding: 1px 0;
 
-  .name {
-    flex-grow: 1;
-    margin-right: 10px;
-  }
-}
-
-mat-progress-spinner {
-  margin-right: 15px;
-}
-
-.status {
-  mat-icon {
-    width: 40px;
-    height: 40px;
-    line-height: 40px;
-    text-align: center;
-  }
-
-  &.F,
-  &.K {
+  &.failed {
     mat-icon {
       color: red;
     }
   }
 
-  &.C {
+  &.cancelled {
+    mat-icon {
+      color: rgb(255, 162, 0);
+    }
+  }
+
+  &.success {
     mat-icon {
       color: green;
+    }
+  }
+
+  .cancel mat-icon {
+    color: rgb(111, 111, 111);
+  }
+
+  .message {
+    flex-grow: 1;
+    margin-right: 10px;
+  }
+    
+  .status {
+    mat-icon {
+      width: 40px;
+      height: 40px;
+      line-height: 40px;
+      text-align: center;
+    }
+  }
+
+  .action {
+    position: relative;
+
+    .spinner {
+      top: 0;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .cancel {
+      visibility: hidden;
+    }
+    
+    &:hover {
+      .spinner {
+        display: none;
+      }
+
+      .cancel {
+        visibility: visible;
+      }
     }
   }
 }
@@ -44,5 +79,11 @@ mat-progress-spinner {
 
   .closing { 
     font-size: 90%;
+  }
+}
+
+::ng-deep {
+  .fs-process-backdrop {
+    background-color: rgb(91 82 82 / 20%) !important;
   }
 }

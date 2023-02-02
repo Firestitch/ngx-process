@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Overlay } from '@angular/cdk/overlay';
 
-import { BehaviorSubject, EMPTY, from, Observable, Subject } from 'rxjs';
-import { catchError, mergeMap, takeUntil, tap, take } from 'rxjs/operators';
+import { BehaviorSubject, EMPTY, from, Observable, of, Subject, throwError } from 'rxjs';
+import { catchError, mergeMap, tap, take, switchMap } from 'rxjs/operators';
 
 
 import { IProcess } from '../interfaces/process';
@@ -12,6 +12,7 @@ import { FsProcessDockComponent } from '../components/dock/dock.component';
 import { ProcessState } from '../enums/process-state';
 import { Process } from '../models/process';
 import { ProcessType } from '../enums/process-type';
+import { ProcessConfig } from '../interfaces';
 
 
 @Injectable({
@@ -20,9 +21,8 @@ import { ProcessType } from '../enums/process-type';
 export class FsProcesses {
 
   private _activeDialog: MatDialogRef<any>;
-
   private _activeProcesses$ = new BehaviorSubject<Process[]>([]);
-  private _queue = new Subject<Process>()
+  private _queue = new Subject<{ process: Process, config: ProcessConfig }>()
 
   public constructor(
     private _dialog: MatDialog,
@@ -35,28 +35,28 @@ export class FsProcesses {
     return this._activeProcesses$.value;
   }
 
-  public addProcess(process: IProcess): Process {
-    return this._pushProcessIntoQueue(process);
+  public addProcess(process: IProcess, config: ProcessConfig): Process {
+    return this._pushProcessIntoQueue(process, config);
   }
 
   private _initQueueProcessing(): void {
     this._queue
       .pipe(
-        tap((process) => {
-          process.setState(ProcessState.Queued);
+        tap((item) => {
+          item.process.setState(ProcessState.Queued);
 
           this._activeProcesses$.next([
             ...this._activeProcesses,
-            process,
+            item.process,
           ]);
         }),
-        tap(() => {
-          this._openProcessesDialog();
+        tap((item) => {
+          this._openProcessesDialog(item.config);
         }),
-        mergeMap((process) => {
-          process.setState(ProcessState.Running);
+        mergeMap((item) => {
+          item.process.setState(ProcessState.Running);
 
-          return this._wrapProcessTarget(process);
+          return this._wrapProcessTarget(item.process);
         }),
         catchError((error, source$) => {
           console.error(error);
@@ -67,7 +67,7 @@ export class FsProcesses {
       .subscribe();
   }
 
-  private _openProcessesDialog(): void {
+  private _openProcessesDialog(config: ProcessConfig): void {
     if (this._activeDialog) {
       return;
     }
@@ -75,7 +75,8 @@ export class FsProcesses {
     this._activeDialog = this._dialog
       .open(FsProcessDockComponent, {
         width: '450px',
-        hasBackdrop: false,
+        hasBackdrop: config?.disableWindow,
+        backdropClass: 'fs-process-backdrop',
         panelClass: 'fs-process-pane',
         position: { bottom: '20px', right: '20px' },
         disableClose: true,
@@ -97,9 +98,9 @@ export class FsProcesses {
       })
   }
 
-  private _pushProcessIntoQueue(process: IProcess): Process {
+  private _pushProcessIntoQueue(process: IProcess, config: ProcessConfig): Process {
     const p = new Process(process);
-    this._queue.next(p);
+    this._queue.next({ process: p, config });
 
     return p;
   }
@@ -107,20 +108,25 @@ export class FsProcesses {
   private _wrapProcessTarget(process: Process): Observable<unknown> {
     return from(process.target)
       .pipe(
-        tap(() => {
-          process.setState(ProcessState.Completed);
-        }),
-        tap((response: string | any) => {
+        switchMap((response: any) => {
           if (process.type === ProcessType.Download) {
+            if(!(typeof response === 'string')) {
+              return throwError('Download URL invalid');
+            }
+
             (window as any).location = response;
           }
+
+          process.setState(ProcessState.Success);
+
+          return of(response);
         }),
         catchError((e) => {
+          process.message = e;
           process.setState(ProcessState.Failed);
 
           return e;
         }),
-        takeUntil(process.terminated$),
       );
   }
 

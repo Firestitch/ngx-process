@@ -4,7 +4,7 @@ import { ProcessState } from '../enums/process-state';
 import { ProcessType } from '../enums/process-type';
 
 export interface IProcess {
-  name: string;
+  message: string;
   state?: ProcessState;
   type: ProcessType,
   target: Observable<unknown>;

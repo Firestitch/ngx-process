@@ -32,7 +32,7 @@ export class FsProcessDockComponent implements OnDestroy, OnInit {
   public closingPercent = 0;
   public timeToClose = 10;
 
-  public processStates = ProcessState;
+  public ProcessState = ProcessState;
 
   public readyToClose$: Observable<boolean>;
   public closeIn$ = timer(0, 1000)
@@ -52,12 +52,10 @@ export class FsProcessDockComponent implements OnDestroy, OnInit {
     @Inject(MAT_DIALOG_DATA)
     private _dialogData: any,
     private _dialogRef: MatDialogRef<FsProcessDockComponent>,
-    private _cdRef: ChangeDetectorRef,
-  ) {
-    this.processes$ = _dialogData.activeProcesses$;
-  }
+  ) {}
 
   public ngOnInit(): void {
+    this.processes$ = this._dialogData.activeProcesses$;
     this._listenClose();
   }
 
@@ -80,9 +78,10 @@ export class FsProcessDockComponent implements OnDestroy, OnInit {
           return combineLatest(processesState)
             .pipe(
               tap((states) => {
-                const failed = states.some((state) => {
-                  return state === ProcessState.Failed;
-                });
+                const failed = states
+                  .some((state) => {
+                    return state === ProcessState.Failed;
+                  });
 
                 if(failed) {
                   this.timeToClose = 0;

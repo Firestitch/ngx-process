@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 
 import { FsExampleComponent } from '@firestitch/example';
 import { FsMessage } from '@firestitch/message';
 import { FsProcess } from '@firestitch/package';
 
-import { Observable, of } from 'rxjs';
-import { delay, map } from 'rxjs/operators';
+import { Observable, of, Subject, timer } from 'rxjs';
+import { delay, map, takeUntil } from 'rxjs/operators';
 
 import { KitchenSinkConfigureComponent } from '../kitchen-sink-configure';
 
@@ -15,16 +15,17 @@ import { KitchenSinkConfigureComponent } from '../kitchen-sink-configure';
   templateUrl: 'kitchen-sink.component.html',
   styleUrls: ['kitchen-sink.component.scss']
 })
-export class KitchenSinkComponent {
+export class KitchenSinkComponent implements OnDestroy {
 
   public config = {};
 
+  private _destroy$ = new Subject();
+  
+
   constructor(
-    private exampleComponent: FsExampleComponent,
     private message: FsMessage,
     private _process: FsProcess,
   ) {
-    exampleComponent.setConfigureComponent(KitchenSinkConfigureComponent, { config: this.config });
   }
 
   public exportAccounts(): void {
@@ -32,25 +33,41 @@ export class KitchenSinkComponent {
       url: 'https://publib.boulder.ibm.com/bpcsamp/v6r1/monitoring/clipsAndTacks/download/ClipsAndTacksF1.zip',
     });
 
-    const process$ = this._process
+    const process = this._process
       .download(
         'Export Accounts',
         request.pipe(
-          delay(4000),
+          delay(5000),
           map((data: any) => {
             return data.url;
           }),
         ),
+        { disableWindow: true }
       );
 
-    process$
+      timer(1000,1000)
+        .pipe(
+          takeUntil(process.completed$)
+        )
+        .subscribe(() => {
+          process.message = process.message + '.';
+        });
+
+    process
+      .completed$
+      .pipe(
+        takeUntil(this._destroy$),
+      )
       .subscribe(() => {
-        console.log('done');
+        console.log('Completed');
       });
 
-    process$.state$
+    process.state$
+      .pipe(
+        takeUntil(this._destroy$),
+      )
       .subscribe((state) => {
-        console.log('STATE: ', state);
+        console.log('State: ', state);
       })
   }
 
@@ -79,7 +96,7 @@ export class KitchenSinkComponent {
   public withError(): void {
     const obs$ = new Observable<unknown>((obs) => {
       setTimeout(() => {
-        obs.error('Error')
+        obs.error('Error');
       }, 2000);
     });
 
@@ -90,5 +107,10 @@ export class KitchenSinkComponent {
         console.log('Error', e)
       }
     });
+  }
+
+  public ngOnDestroy(): void {
+    this._destroy$.next();
+    this._destroy$.complete();
   }
 }
