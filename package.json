@@ -18,11 +18,11 @@
   "main": "package/index.js",
   "typings": "package/index.d.ts",
   "scripts": {
-    "package": "cd tools && npm run cli:package",
-    "package:test": "cd tools && npm run cli:package:test",
-    "package:publish": "cd tools && npm run cli:package:publish",
-    "demo:build": "cd tools && npm run cli:demo",
-    "serve": "cd tools && npm run cli:serve"
+    "package": "cd node_modules/@firestitch/component-tools && npm run cli:package",
+    "package:test": "cd node_modules/@firestitch/component-tools && npm run cli:package:test",
+    "package:publish": "cd node_modules/@firestitch/component-tools && npm run cli:package:publish",
+    "demo:build": "cd node_modules/@firestitch/component-tools && npm run cli:demo",
+    "serve": "cd node_modules/@firestitch/component-tools && npm run cli:serve"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~12.2.16",
@@ -63,7 +63,8 @@
     "rxjs": "^6.6.7",
     "tslint": "~6.1.0",
     "typescript": "4.3.5",
-    "zone.js": "~0.11.4"
+    "zone.js": "~0.11.4",
+    "@firestitch/component-tools": "^12.0.6"
   },
   "engines": {
     "node": ">=6.0.0"
