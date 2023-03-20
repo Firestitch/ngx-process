@@ -43,7 +43,7 @@
     "@angular/router": "^12.2.16",
     "@compodoc/compodoc": "^1.1.19",
     "@firestitch/common": "^12.0.0",
-    "@firestitch/component-tools": "^12.0.8",
+    "@firestitch/component-tools": "^12.0.11",
     "@firestitch/drawer": "^12.0.0",
     "@firestitch/example": "^12.0.0",
     "@firestitch/iframe": "^12.0.0",
