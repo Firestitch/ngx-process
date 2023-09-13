@@ -1,0 +1,12 @@
+{
+  "html.format.wrapAttributes": "preserve",
+  "git.ignoreLimitWarning": true,
+  "angular.view-engine": false,
+  "[typescript]": {
+    "editor.formatOnSave": true
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true,
+    "source.organizeImports": true
+  }
+}
