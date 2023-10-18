@@ -47,6 +47,7 @@
     "@firestitch/example": "^12.1.1",
     "@firestitch/iframe": "^12.0.0",
     "@firestitch/label": "^12.0.0",
+    "@firestitch/lint": "^12.0.18",
     "@firestitch/menu": "^12.0.1",
     "@firestitch/message": "^12.3.1",
     "@firestitch/store": "^12.0.0",
