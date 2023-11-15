@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 import { Observable, Subject, combineLatest, of, timer } from 'rxjs';
@@ -36,7 +37,7 @@ export class FsProcessDockComponent implements OnDestroy, OnInit {
   public readyToClose$: Observable<boolean>;
   public closeIn$ = timer(0, 1000)
     .pipe(
-      scan(acc => --acc, this.timeToClose),
+      scan((acc) => --acc, this.timeToClose),
       takeWhile((x) => x > 0),
       tap((x) => {
         if (x <= 1) {

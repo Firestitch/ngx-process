@@ -6,6 +6,6 @@ import { ProcessType } from '../enums/process-type';
 export interface IProcess {
   message: string;
   state?: ProcessState;
-  type: ProcessType,
+  type: ProcessType;
   target: Observable<unknown>;
 }

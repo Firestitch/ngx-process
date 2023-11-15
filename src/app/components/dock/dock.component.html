@@ -16,12 +16,12 @@
   <ng-container *ngFor="let process of processes$ | async">
     <div       
         class="process" 
-        [ngClass]="process.state">
+        [ngClass]="process.state$ | async">
       <div class="message">
         {{process.message$ | async}}
       </div>
       <div class="status">
-        <ng-container [ngSwitch]="process.state">
+        <ng-container [ngSwitch]="process.state$ | async">
           <ng-container *ngSwitchCase="ProcessState.Failed">
             <mat-icon [matTooltip]="'Failed'">report_problem</mat-icon>
           </ng-container>
@@ -39,7 +39,7 @@
           </ng-container> 
         </ng-container> 
       </div>
-      <ng-container *ngIf="process.state === ProcessState.Running">
+      <ng-container *ngIf="(process.state$ | async) === ProcessState.Running">
         <div class="action">
           <div class="spinner">
             <mat-progress-spinner

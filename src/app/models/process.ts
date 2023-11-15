@@ -1,5 +1,5 @@
 import { BehaviorSubject, Observable } from 'rxjs';
-import { filter, finalize, share } from 'rxjs/operators';
+import { filter, share } from 'rxjs/operators';
 
 import { ProcessState } from '../enums/process-state';
 import { ProcessType } from '../enums/process-type';
@@ -84,12 +84,7 @@ export class Process<T extends unknown = unknown> extends Observable<T> {
     this._target = process.target
       .pipe(
         share(),
-        finalize(() => {
-          this._state$.complete();
-        }),
       );
-
-    this._subscribe = ((subscriber) => this._target.subscribe(subscriber));
   }
 
 }

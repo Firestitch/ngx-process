@@ -3,8 +3,10 @@ import { Injectable } from '@angular/core';
 import { Overlay } from '@angular/cdk/overlay';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
-import { BehaviorSubject, EMPTY, from, Observable, of, Subject, throwError } from 'rxjs';
-import { catchError, mergeMap, switchMap, take, tap } from 'rxjs/operators';
+import { Queue } from '@firestitch/common';
+
+import { BehaviorSubject, EMPTY, of, Subject, throwError } from 'rxjs';
+import { catchError, switchMap, take, tap } from 'rxjs/operators';
 
 
 import { FsProcessDockComponent } from '../components/dock/dock.component';
@@ -20,9 +22,10 @@ import { Process } from '../models/process';
 })
 export class FsProcesses {
 
+  private _queue = new Queue(3);
   private _activeDialog: MatDialogRef<any>;
   private _activeProcesses$ = new BehaviorSubject<Process[]>([]);
-  private _queue = new Subject<{ process: Process; config: ProcessConfig }>();
+  private _queue$ = new Subject<{ process: Process; config: ProcessConfig }>();
 
   constructor(
     private _dialog: MatDialog,
@@ -40,7 +43,7 @@ export class FsProcesses {
   }
 
   private _initQueueProcessing(): void {
-    this._queue
+    this._queue$
       .pipe(
         tap((item) => {
           item.process.setState(ProcessState.Queued);
@@ -53,12 +56,12 @@ export class FsProcesses {
         tap((item) => {
           this._openProcessesDialog(item.config);
         }),
-        mergeMap((item) => {
+        tap((item) => {
           item.process.setState(ProcessState.Running);
 
-          return this._wrapProcessTarget(item.process);
+          this._wrapProcessTarget(item.process);
         }),
-        catchError((error, source$) => {
+        catchError((error) => {
           console.error(error);
 
           return EMPTY;
@@ -100,34 +103,36 @@ export class FsProcesses {
 
   private _pushProcessIntoQueue(process: IProcess, config: ProcessConfig): Process {
     const p = new Process(process);
-    this._queue.next({ process: p, config });
+    this._queue$.next({ process: p, config });
 
     return p;
   }
 
-  private _wrapProcessTarget(process: Process): Observable<unknown> {
-    return from(process.target)
-      .pipe(
-        switchMap((response: any) => {
-          if (process.type === ProcessType.Download) {
-            if (!(typeof response === 'string')) {
-              return throwError('Download URL invalid');
+  private _wrapProcessTarget(process: Process): any {
+    this._queue.push(
+      process.target
+        .pipe(
+          switchMap((response: any) => {
+            if (process.type === ProcessType.Download) {
+              if (!(typeof response === 'string')) {
+                return throwError('Download URL invalid');
+              }
+
+              (window as any).location = response;
             }
 
-            (window as any).location = response;
-          }
+            process.setState(ProcessState.Success);
 
-          process.setState(ProcessState.Success);
+            return of(response);
+          }),
+          catchError((e) => {
+            process.message = e;
+            process.setState(ProcessState.Failed);
 
-          return of(response);
-        }),
-        catchError((e) => {
-          process.message = e;
-          process.setState(ProcessState.Failed);
-
-          return e;
-        }),
-      );
+            return e;
+          }),
+        ),
+    );
   }
 
 }
