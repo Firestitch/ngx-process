@@ -1,22 +1,22 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
-import { Observable, of, Subject, timer, combineLatest } from 'rxjs';
+import { Observable, Subject, combineLatest, of, timer } from 'rxjs';
 import {
+  map,
   scan,
   switchMap,
   takeWhile,
-  map,
   tap,
 } from 'rxjs/operators';
 
-import { Process } from '../../models/process';
 import { ProcessState } from '../../enums/process-state';
+import { Process } from '../../models/process';
 
 
 @Component({
-  templateUrl: 'dock.component.html',
-  styleUrls: ['dock.component.scss'],
+  templateUrl: './dock.component.html',
+  styleUrls: ['./dock.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FsProcessDockComponent implements OnDestroy, OnInit {
@@ -31,7 +31,6 @@ export class FsProcessDockComponent implements OnDestroy, OnInit {
   public remainingSeconds: number;
   public closingPercent = 0;
   public timeToClose = 10;
-
   public ProcessState = ProcessState;
 
   public readyToClose$: Observable<boolean>;
@@ -52,7 +51,7 @@ export class FsProcessDockComponent implements OnDestroy, OnInit {
     @Inject(MAT_DIALOG_DATA)
     private _dialogData: any,
     private _dialogRef: MatDialogRef<FsProcessDockComponent>,
-  ) {}
+  ) { }
 
   public ngOnInit(): void {
     this.processes$ = this._dialogData.activeProcesses$;
@@ -83,7 +82,7 @@ export class FsProcessDockComponent implements OnDestroy, OnInit {
                     return state === ProcessState.Failed;
                   });
 
-                if(failed) {
+                if (failed) {
                   this.timeToClose = 0;
                 }
               }),

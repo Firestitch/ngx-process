@@ -1,29 +1,24 @@
 import { Component, OnDestroy } from '@angular/core';
 
-import { FsExampleComponent } from '@firestitch/example';
-import { FsMessage } from '@firestitch/message';
 import { FsProcess } from '@firestitch/package';
 
 import { Observable, of, Subject, timer } from 'rxjs';
 import { delay, map, takeUntil } from 'rxjs/operators';
 
-import { KitchenSinkConfigureComponent } from '../kitchen-sink-configure';
-
 
 @Component({
   selector: 'kitchen-sink',
-  templateUrl: 'kitchen-sink.component.html',
-  styleUrls: ['kitchen-sink.component.scss']
+  templateUrl: './kitchen-sink.component.html',
+  styleUrls: ['./kitchen-sink.component.scss'],
 })
 export class KitchenSinkComponent implements OnDestroy {
 
   public config = {};
 
   private _destroy$ = new Subject();
-  
+
 
   constructor(
-    private message: FsMessage,
     private _process: FsProcess,
   ) {
   }
@@ -36,22 +31,23 @@ export class KitchenSinkComponent implements OnDestroy {
     const process = this._process
       .download(
         'Export Accounts',
-        request.pipe(
-          delay(5000),
-          map((data: any) => {
-            return data.url;
-          }),
-        ),
-        { disableWindow: true }
+        request
+          .pipe(
+            delay(5000),
+            map((data: any) => {
+              return data.url;
+            }),
+          ),
+        { disableWindow: true },
       );
 
-      timer(1000,1000)
-        .pipe(
-          takeUntil(process.completed$)
-        )
-        .subscribe(() => {
-          process.message = process.message + '.';
-        });
+    timer(1000, 1000)
+      .pipe(
+        takeUntil(process.completed$),
+      )
+      .subscribe(() => {
+        process.message = `${process.message}.`;
+      });
 
     process
       .completed$
@@ -68,27 +64,27 @@ export class KitchenSinkComponent implements OnDestroy {
       )
       .subscribe((state) => {
         console.log('State: ', state);
-      })
+      });
   }
 
   public dbDrop(): void {
-    const request = of({ });
+    const request = of({});
 
     this._process.run(
       'Drop Database',
       request.pipe(
-        delay(10000),        
+        delay(10000),
       ),
     );
   }
 
   public charge(): void {
-    const request = of({ });
+    const request = of({});
 
     this._process.run(
       'Charge Bank Account',
       request.pipe(
-        delay(2000),        
+        delay(2000),
       ),
     );
   }
@@ -104,8 +100,8 @@ export class KitchenSinkComponent implements OnDestroy {
 
     process$.subscribe({
       error: (e) => {
-        console.log('Error', e)
-      }
+        console.log('Error', e);
+      },
     });
   }
 

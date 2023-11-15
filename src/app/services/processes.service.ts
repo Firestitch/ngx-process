@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
 
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Overlay } from '@angular/cdk/overlay';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 import { BehaviorSubject, EMPTY, from, Observable, of, Subject, throwError } from 'rxjs';
-import { catchError, mergeMap, tap, take, switchMap } from 'rxjs/operators';
+import { catchError, mergeMap, switchMap, take, tap } from 'rxjs/operators';
 
 
-import { IProcess } from '../interfaces/process';
 import { FsProcessDockComponent } from '../components/dock/dock.component';
 import { ProcessState } from '../enums/process-state';
-import { Process } from '../models/process';
 import { ProcessType } from '../enums/process-type';
 import { ProcessConfig } from '../interfaces';
+import { IProcess } from '../interfaces/process';
+import { Process } from '../models/process';
 
 
 @Injectable({
@@ -22,9 +22,9 @@ export class FsProcesses {
 
   private _activeDialog: MatDialogRef<any>;
   private _activeProcesses$ = new BehaviorSubject<Process[]>([]);
-  private _queue = new Subject<{ process: Process, config: ProcessConfig }>()
+  private _queue = new Subject<{ process: Process; config: ProcessConfig }>();
 
-  public constructor(
+  constructor(
     private _dialog: MatDialog,
     private _overlay: Overlay,
   ) {
@@ -84,7 +84,7 @@ export class FsProcesses {
         scrollStrategy: this._overlay.scrollStrategies.noop(),
         data: {
           activeProcesses$: this._activeProcesses$,
-        }
+        },
       });
 
     this._activeDialog
@@ -95,7 +95,7 @@ export class FsProcesses {
       .subscribe(() => {
         this._activeDialog = null;
         this._activeProcesses$.next([]);
-      })
+      });
   }
 
   private _pushProcessIntoQueue(process: IProcess, config: ProcessConfig): Process {
@@ -110,7 +110,7 @@ export class FsProcesses {
       .pipe(
         switchMap((response: any) => {
           if (process.type === ProcessType.Download) {
-            if(!(typeof response === 'string')) {
+            if (!(typeof response === 'string')) {
               return throwError('Download URL invalid');
             }
 

@@ -1,5 +1,5 @@
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { filter, finalize, share, shareReplay } from 'rxjs/operators';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { filter, finalize, share } from 'rxjs/operators';
 
 import { ProcessState } from '../enums/process-state';
 import { ProcessType } from '../enums/process-type';
@@ -30,23 +30,24 @@ export class Process<T extends unknown = unknown> extends Observable<T> {
 
   public get completed$(): Observable<any> {
     return this._state$.asObservable()
-    .pipe(
-      filter((state) => [ProcessState.Cancelled, ProcessState.Failed, ProcessState.Success].indexOf(state) !== -1),
-    );
+      .pipe(
+        filter((state) => [ProcessState.Cancelled, ProcessState.Failed, ProcessState.Success]
+          .indexOf(state) !== -1),
+      );
   }
 
   public get failed$(): Observable<any> {
     return this._state$.asObservable()
-    .pipe(
-      filter((state) => state === ProcessState.Failed),
-    );
+      .pipe(
+        filter((state) => state === ProcessState.Failed),
+      );
   }
 
   public get cancelled$(): Observable<any> {
     return this._state$.asObservable()
-    .pipe(
-      filter((state) => state === ProcessState.Cancelled),
-    );
+      .pipe(
+        filter((state) => state === ProcessState.Cancelled),
+      );
   }
 
   public get message(): string {
@@ -88,7 +89,7 @@ export class Process<T extends unknown = unknown> extends Observable<T> {
         }),
       );
 
-    this._subscribe = (subscriber => this._target.subscribe(subscriber));
+    this._subscribe = ((subscriber) => this._target.subscribe(subscriber));
   }
 
 }
