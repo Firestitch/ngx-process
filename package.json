@@ -2,7 +2,7 @@
   "name": "@firestitch/process",
   "title": "Process",
   "description": "@firestitch/process",
-  "version": "12.2.0",
+  "version": "12.2.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/Firestitch/ngx-process"
@@ -41,7 +41,9 @@
     "@angular/platform-browser-dynamic": "^12.2.16",
     "@angular/router": "^12.2.16",
     "@compodoc/compodoc": "^1.1.19",
-    "@firestitch/common": "^12.0.0",
+    "@firestitch/common": "^12.6.0",
+    "@firestitch/api": "^12.3.10",
+    "@firestitch/date": "^12.4.5",
     "@firestitch/component-tools": "^12.0.17",
     "@firestitch/drawer": "^12.0.0",
     "@firestitch/example": "^12.1.1",

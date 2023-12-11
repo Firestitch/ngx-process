@@ -9,6 +9,8 @@ import { BehaviorSubject, EMPTY, of, Subject, throwError } from 'rxjs';
 import { catchError, switchMap, take, tap } from 'rxjs/operators';
 
 
+import { HttpErrorResponse } from '@angular/common/http';
+
 import { FsProcessDockComponent } from '../components/dock/dock.component';
 import { ProcessState } from '../enums/process-state';
 import { ProcessType } from '../enums/process-type';
@@ -126,7 +128,13 @@ export class FsProcesses {
             return of(response);
           }),
           catchError((e) => {
-            process.message = e;
+            process.message = 'Process failed';
+            if (e instanceof HttpErrorResponse && e.statusText) {
+              process.message = e.statusText;
+            } else if (typeof e === 'string') {
+              process.message = e;
+            }
+
             process.setState(ProcessState.Failed);
 
             return e;

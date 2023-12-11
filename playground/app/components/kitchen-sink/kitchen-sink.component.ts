@@ -1,5 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 
+import { FsApi } from '@firestitch/api';
 import { FsProcess } from '@firestitch/package';
 
 import { Observable, of, Subject, timer } from 'rxjs';
@@ -20,6 +21,7 @@ export class KitchenSinkComponent implements OnDestroy {
 
   constructor(
     private _process: FsProcess,
+    private _api: FsApi,
   ) {
   }
 
@@ -88,6 +90,14 @@ export class KitchenSinkComponent implements OnDestroy {
       ),
     );
   }
+
+  public apiError(): void {
+    this._process.run(
+      'Api Error',
+      this._api.get('https://specify.local.firestitch.com/api/dummy?exception=There was an error'),
+    );
+  }
+
 
   public withError(): void {
     const obs$ = new Observable<unknown>((obs) => {

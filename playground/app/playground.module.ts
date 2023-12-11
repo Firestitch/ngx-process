@@ -1,21 +1,25 @@
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterModule, Routes } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterModule, Routes } from '@angular/router';
 
+import { FsApiModule } from '@firestitch/api';
 import { FsExampleModule } from '@firestitch/example';
+import { FsLabelModule } from '@firestitch/label';
 import { FsMessageModule } from '@firestitch/message';
 import { FsProcessModule } from '@firestitch/package';
-import { FsLabelModule } from '@firestitch/label';
 
-import { AppMaterialModule } from './material.module';
-import {
-  KitchenSinkComponent,
-  ExamplesComponent
-} from './components';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+
 import { AppComponent } from './app.component';
+import {
+  ExamplesComponent,
+  KitchenSinkComponent,
+} from './components';
 import { KitchenSinkConfigureComponent } from './components/kitchen-sink-configure';
+import { AppMaterialModule } from './material.module';
+
 
 const routes: Routes = [
   { path: '', component: ExamplesComponent },
@@ -31,6 +35,7 @@ const routes: Routes = [
     FormsModule,
     FsLabelModule,
     FsExampleModule.forRoot(),
+    FsApiModule.forRoot(),
     FsMessageModule.forRoot(),
     RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' }),
   ],
@@ -38,7 +43,7 @@ const routes: Routes = [
     AppComponent,
     ExamplesComponent,
     KitchenSinkComponent,
-    KitchenSinkConfigureComponent
+    KitchenSinkConfigureComponent,
   ],
 })
 export class PlaygroundModule {
