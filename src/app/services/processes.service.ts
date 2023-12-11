@@ -137,7 +137,7 @@ export class FsProcesses {
 
             process.setState(ProcessState.Failed);
 
-            return e;
+            return throwError(e);
           }),
         ),
     );
