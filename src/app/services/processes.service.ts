@@ -40,6 +40,10 @@ export class FsProcesses {
     return this._activeProcesses$.value;
   }
 
+  public setLimit(value) {
+    this._queue.setLimit(value);
+  }
+
   public addProcess(process: IProcess, config: ProcessConfig): Process {
     return this._pushProcessIntoQueue(process, config);
   }
