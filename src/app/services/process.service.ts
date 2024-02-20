@@ -18,6 +18,10 @@ export class FsProcess {
     private _processes: FsProcesses,
   ) { }
 
+  public setLimit(value) {
+    this._processes.setLimit(value);
+  }
+
   public download(message: string, target: Observable<string>, config?: ProcessConfig): Process {
     return this._processes.addProcess({
       message,
