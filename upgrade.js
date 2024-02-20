@@ -8,7 +8,6 @@ let exec = function(cmd) {
 fs.rmSync('node_modules', { recursive: true, force: true });
 fs.rmSync('package-lock.json', {  force: true });
 
-exec('npm install @firestitch/component-tools@^13.0.2');
 exec('npm install');
 
 exec('git add .');
@@ -28,8 +27,8 @@ if(ngPackage.whitelistedNonPeerDependencies) {
   fs.writeFileSync('src/ng-package.json', JSON.stringify(ngPackage, undefined, 2));
 }
 
-
 exec('npm install @angular/cli@13 --force');
+exec('npm install @firestitch/component-tools@^13.0.2');
 exec('git add .');
 exec('git commit --message="Angular 13 Upgrade"');
 exec('node node_modules/@angular/cli/bin/ng update @angular/material@13 --force');
