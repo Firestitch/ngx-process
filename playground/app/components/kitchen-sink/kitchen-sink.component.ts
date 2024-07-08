@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 
 import { FsApi } from '@firestitch/api';
 import { FsProcess } from '@firestitch/package';
@@ -11,6 +11,7 @@ import { delay, map, takeUntil } from 'rxjs/operators';
   selector: 'kitchen-sink',
   templateUrl: './kitchen-sink.component.html',
   styleUrls: ['./kitchen-sink.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KitchenSinkComponent implements OnDestroy {
 
@@ -93,11 +94,24 @@ export class KitchenSinkComponent implements OnDestroy {
 
   public apiError(): void {
     this._process.run(
-      'Api Error',
-      this._api.get('https://specify.local.firestitch.com/api/dummy?exception=There was an error'),
+      'API Error',
+      this._api.get('https://specify.firestitch.dev/api/dummy?exception=There was an error'),
     );
   }
 
+  public apiSuccess(): void {
+    this._process.run(
+      'API Success',
+      this._api.get('https://specify.local.firestitch.com/api/dummy'),
+    );
+  }
+
+  public apiKeepAliveError(): void {
+    this._process.run(
+      'API Keep Alive Error',
+      this._api.get('https://specify.local.firestitch.com/api/dummy?keepAlive=3'),
+    );
+  }
 
   public withError(): void {
     const obs$ = new Observable<unknown>((obs) => {
