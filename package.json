@@ -40,7 +40,7 @@
     "@angular/platform-browser": "^13.4.0",
     "@angular/platform-browser-dynamic": "^13.4.0",
     "@angular/router": "^13.4.0",
-    "@firestitch/api": "^12.4.0",
+    "@firestitch/api": "^13.5.8",
     "@firestitch/common": "^12.6.0",
     "@firestitch/component-tools": "^13.0.6",
     "@firestitch/date": "^12.4.5",

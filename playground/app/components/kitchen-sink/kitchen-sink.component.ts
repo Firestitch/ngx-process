@@ -1,10 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnDestroy } from '@angular/core';
 
-import { FsApi } from '@firestitch/api';
+import { FsApi, RequestMethod, StreamEventComplete, StreamEventData } from '@firestitch/api';
 import { FsProcess } from '@firestitch/package';
 
-import { Observable, of, Subject, timer } from 'rxjs';
-import { delay, map, takeUntil } from 'rxjs/operators';
+import { Observable, of, Subject, throwError, timer } from 'rxjs';
+import { catchError, delay, map, takeUntil, tap } from 'rxjs/operators';
+
+import { TEST_URL } from 'playground/app/injectors';
 
 
 @Component({
@@ -19,8 +21,8 @@ export class KitchenSinkComponent implements OnDestroy {
 
   private _destroy$ = new Subject();
 
-
   constructor(
+    @Inject(TEST_URL) private _url: string,
     private _process: FsProcess,
     private _api: FsApi,
   ) {
@@ -29,19 +31,18 @@ export class KitchenSinkComponent implements OnDestroy {
   public exportAccounts(): void {
     const request = of({
       url: 'https://publib.boulder.ibm.com/bpcsamp/v6r1/monitoring/clipsAndTacks/download/ClipsAndTacksF1.zip',
-    });
+    })
+      .pipe(
+        delay(5000),
+        map((data: any) => {
+          return data.url;
+        }),
+      );
 
     const process = this._process
       .download(
         'Export Accounts',
-        request
-          .pipe(
-            delay(5000),
-            map((data: any) => {
-              return data.url;
-            }),
-          ),
-        { disableWindow: true },
+        request,
       );
 
     timer(1000, 1000)
@@ -92,24 +93,68 @@ export class KitchenSinkComponent implements OnDestroy {
     );
   }
 
+  public apiStreamError(): void {
+    this.apiStream('Something bad happened');
+  }
+
+  public apiStream(exception?): void {
+    const subject = new Subject();
+
+    this._api.stream(
+      RequestMethod.Post, `${this._url}/stream`,
+      { 
+        count: 20, 
+        sleep: .25,
+        exception,
+      },
+    )
+      .pipe(
+        tap((event) => {
+          if(event instanceof StreamEventData) {
+            process.message = event.data.word;
+          }
+   
+          if(event instanceof StreamEventComplete) {
+            process.message = 'Completed process';
+          }
+        }),
+        catchError((error) => {
+          subject.error(error);
+
+          return throwError(error);
+        }),
+      )
+      .subscribe({
+        complete: () => {
+          subject.next();
+          subject.complete();
+        },
+      });
+
+    const process = this._process.run(
+      'API Streaming',
+      subject.asObservable(),
+    );
+  }
+
   public apiError(): void {
     this._process.run(
       'API Error',
-      this._api.get('https://specify.firestitch.dev/api/dummy?exception=There was an error'),
+      this._api.get(`${this._url}?exception=There was an error`),
     );
   }
 
   public apiSuccess(): void {
     this._process.run(
       'API Success',
-      this._api.get('https://specify.local.firestitch.com/api/dummy'),
+      this._api.get(this._url),
     );
   }
 
   public apiKeepAliveError(): void {
     this._process.run(
       'API Keep Alive Error',
-      this._api.get('https://specify.local.firestitch.com/api/dummy?keepAlive=3'),
+      this._api.get(`${this._url}?keepAlive=3`),
     );
   }
 

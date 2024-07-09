@@ -18,6 +18,7 @@ import {
   KitchenSinkComponent,
 } from './components';
 import { KitchenSinkConfigureComponent } from './components/kitchen-sink-configure';
+import { TEST_URL } from './injectors';
 import { AppMaterialModule } from './material.module';
 
 
@@ -44,6 +45,15 @@ const routes: Routes = [
     ExamplesComponent,
     KitchenSinkComponent,
     KitchenSinkConfigureComponent,
+  ],
+  providers: [
+    { provide: TEST_URL, 
+      useFactory: () => {
+        return document.location.hostname === 'localhost' ? 
+          'https://specify.local.firestitch.com/api/dummy' :
+          'https://specify.firestitch.dev/api/dummy';
+      }, 
+    },
   ],
 })
 export class PlaygroundModule {

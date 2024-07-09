@@ -84,7 +84,7 @@ export class FsProcesses {
     this._activeDialog = this._dialog
       .open(FsProcessDockComponent, {
         width: '450px',
-        hasBackdrop: config?.disableWindow,
+        hasBackdrop: false,
         backdropClass: 'fs-process-backdrop',
         panelClass: 'fs-process-pane',
         position: { bottom: '20px', right: '20px' },

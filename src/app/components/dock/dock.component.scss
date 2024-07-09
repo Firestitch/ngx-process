@@ -29,6 +29,9 @@
   .message {
     flex-grow: 1;
     margin-right: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
     
   .status {

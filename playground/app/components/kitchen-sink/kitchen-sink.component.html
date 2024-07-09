@@ -19,14 +19,17 @@
 
   <button
       mat-raised-button
-      (click)="apiSuccess()">
-    API Success
+      (click)="withError()">
+    Error in 2 sec
   </button>
+</div>
 
+<h2>API</h2>
+<div class="fs-row.gap-sm">
   <button
       mat-raised-button
-      (click)="apiKeepAliveError()">
-    API Keep Alive Error
+      (click)="apiSuccess()">
+    API Success
   </button>
 
   <button
@@ -34,10 +37,28 @@
       (click)="apiError()">
     API Error
   </button>
+</div>
+
+<h2>API Keep Alive</h2>
+<div class="fs-row.gap-sm">
+  <button
+      mat-raised-button
+      (click)="apiKeepAliveError()">
+    API Keep Alive Error
+  </button>
+</div>
+
+<h2>API Stream</h2>
+<div class="fs-row.gap-sm">
+  <button
+      mat-raised-button
+      (click)="apiStream()">
+    API Stream
+  </button>
 
   <button
       mat-raised-button
-      (click)="withError()">
-    Error in 2 sec
+      (click)="apiStreamError()">
+    API Stream Error
   </button>
 </div>
