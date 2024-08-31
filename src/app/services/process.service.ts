@@ -22,17 +22,17 @@ export class FsProcess {
     this._processes.setLimit(value);
   }
 
-  public download(message: string, target: Observable<string>, config?: ProcessConfig): Process {
+  public download(name: string, target: Observable<string>, config?: ProcessConfig): Process {
     return this._processes.addProcess({
-      message,
+      name,
       type: ProcessType.Download,
       target,
     }, config);
   }
 
-  public run(message: string, target: Observable<any>, config?: ProcessConfig): Process {
+  public run(name: string, target: Observable<any>, config?: ProcessConfig): Process {
     return this._processes.addProcess({
-      message,
+      name,
       type: ProcessType.Run,
       target,
     }, config);

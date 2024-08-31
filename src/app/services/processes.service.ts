@@ -5,8 +5,8 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 import { Queue } from '@firestitch/common';
 
-import { BehaviorSubject, EMPTY, of, Subject, throwError } from 'rxjs';
-import { catchError, switchMap, take, tap } from 'rxjs/operators';
+import { BehaviorSubject, EMPTY, Subject, throwError } from 'rxjs';
+import { catchError, take, tap } from 'rxjs/operators';
 
 
 import { HttpErrorResponse } from '@angular/common/http';
@@ -118,27 +118,34 @@ export class FsProcesses {
     this._queue.push(
       process.target
         .pipe(
-          switchMap((response: any) => {
-            if (process.type === ProcessType.Download) {
-              if (!(typeof response === 'string')) {
-                return throwError('Download URL invalid');
+          tap({
+            next: (response: any) => {
+              if (process.type === ProcessType.Download) {
+                if (!(typeof response === 'string')) {
+                  return throwError('Download URL invalid');
+                }
+
+                (window as any).location = response;
+              } else if (process.type === ProcessType.Run) {
+                if(typeof response === 'string') {
+                  process.message = response;
+                }
               }
-
-              (window as any).location = response;
-            }
-
-            process.setState(ProcessState.Success);
-
-            return of(response);
+            },
+            complete: () => {
+              process.message = `${process.name}`;
+              process.setState(ProcessState.Success);
+            },
           }),
           catchError((e) => {
-            process.message = 'Process failed';
+            let message = 'Process failed';
             if (e instanceof HttpErrorResponse && e.statusText) {
-              process.message = e.statusText;
-            } else if (typeof e === 'string') {
-              process.message = e;
+              message = e.statusText;
+            } else if (typeof e === 'string' && e) {
+              message = e;
             }
 
+            process.message = `${process.name}: ${message}`;
             process.setState(ProcessState.Failed);
 
             return throwError(e);

@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, Inject, OnDestroy } from '@angular/core';
 
-import { FsApi, RequestMethod, StreamEventComplete, StreamEventData } from '@firestitch/api';
+import { FsApi, RequestMethod, StreamEventData } from '@firestitch/api';
 import { FsProcess } from '@firestitch/package';
 
-import { Observable, of, Subject, throwError, timer } from 'rxjs';
-import { catchError, delay, map, takeUntil, tap } from 'rxjs/operators';
+import { Observable, of, Subject, timer } from 'rxjs';
+import { delay, map, takeUntil } from 'rxjs/operators';
 
 import { TEST_URL } from 'playground/app/injectors';
 
@@ -98,9 +98,8 @@ export class KitchenSinkComponent implements OnDestroy {
   }
 
   public apiStream(exception?): void {
-    const subject = new Subject();
 
-    this._api.stream(
+    const subject = this._api.stream(
       RequestMethod.Post, `${this._url}/stream`,
       { 
         count: 20, 
@@ -109,31 +108,18 @@ export class KitchenSinkComponent implements OnDestroy {
       },
     )
       .pipe(
-        tap((event) => {
+        map((event) => {
           if(event instanceof StreamEventData) {
-            process.message = event.data.word;
+            return event.data.word;
           }
-   
-          if(event instanceof StreamEventComplete) {
-            process.message = 'Completed process';
-          }
-        }),
-        catchError((error) => {
-          subject.error(error);
 
-          return throwError(error);
+          return '';
         }),
-      )
-      .subscribe({
-        complete: () => {
-          subject.next();
-          subject.complete();
-        },
-      });
+      );
 
     const process = this._process.run(
       'API Streaming',
-      subject.asObservable(),
+      subject,
     );
   }
 

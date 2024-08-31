@@ -12,6 +12,7 @@ export class Process<T extends unknown = unknown> extends Observable<T> {
   private _message$ = new BehaviorSubject<string>(null);
 
   private _type: ProcessType;
+  private _name: string;
   private _target: Observable<unknown>;
 
   constructor(process: IProcess) {
@@ -22,6 +23,10 @@ export class Process<T extends unknown = unknown> extends Observable<T> {
 
   public get state(): ProcessState {
     return this._state$.value;
+  }
+
+  public get name(): string {
+    return this._name;
   }
 
   public get state$(): Observable<ProcessState> {
@@ -79,7 +84,8 @@ export class Process<T extends unknown = unknown> extends Observable<T> {
   }
 
   private _init(process: IProcess) {
-    this._message$.next(process.message);
+    this._name = process.name;
+    this._message$.next(process.name);
     this._type = process.type;
     this._target = process.target
       .pipe(
