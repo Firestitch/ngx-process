@@ -18,7 +18,9 @@
         class="process" 
         [ngClass]="process.state$ | async">
       <div class="message" (click)="viewProcess(process)">
-        {{process.message$ | async}}
+        {{process.name}}<ng-container *ngIf="(process.message$ | async)">:
+          {{process.message$ | async}}
+        </ng-container>
       </div>
       <div class="status">
         <ng-container [ngSwitch]="process.state$ | async">

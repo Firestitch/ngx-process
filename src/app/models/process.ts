@@ -94,7 +94,6 @@ export class Process<T extends unknown = unknown> extends Observable<T> {
 
   private _init(process: IProcess) {
     this._name = process.name;
-    this._message$.next(process.name);
     this._type = process.type;
     this._target = process.target
       .pipe(
