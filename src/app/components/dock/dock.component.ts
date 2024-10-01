@@ -34,7 +34,7 @@ export class FsProcessDockComponent implements OnDestroy, OnInit {
   public closingPercent = 0;
   public timeToClose = 10;
   public ProcessState = ProcessState;
-
+  public wakeLock;
   public readyToClose$: Observable<boolean>;
   public closeIn$ = timer(0, 1000)
     .pipe(
@@ -58,12 +58,24 @@ export class FsProcessDockComponent implements OnDestroy, OnInit {
 
   public ngOnInit(): void {
     this.processes$ = this._dialogData.activeProcesses$;
+    const wakeLockRequest = (navigator as any).wakeLock?.request('screen');
+
+    if(wakeLockRequest) {
+      wakeLockRequest
+        .then((wakeLock) => {
+          this.wakeLock = wakeLock;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
     this._listenClose();
   }
 
   public ngOnDestroy() {
     this._destroy$.next();
     this._destroy$.complete();
+    this.wakeLock?.release();
   }
 
   public viewProcess(process: Process): void {
