@@ -10,6 +10,7 @@ export class Process<T extends unknown = unknown> extends Observable<T> {
 
   private _state$ = new BehaviorSubject(ProcessState.Queued);
   private _message$ = new BehaviorSubject<string>(null);
+  private _log$ = new BehaviorSubject<string>('');
 
   private _type: ProcessType;
   private _name: string;
@@ -53,6 +54,14 @@ export class Process<T extends unknown = unknown> extends Observable<T> {
       .pipe(
         filter((state) => state === ProcessState.Cancelled),
       );
+  }
+
+  public get log$(): Observable<string> {
+    return this._log$.asObservable();
+  }
+
+  public appendLog(message: string): void {
+    this._log$.next(`${this._log$.value}\n${message}`);
   }
 
   public get message(): string {

@@ -17,7 +17,7 @@
     <div       
         class="process" 
         [ngClass]="process.state$ | async">
-      <div class="message">
+      <div class="message" (click)="viewProcess(process)">
         {{process.message$ | async}}
       </div>
       <div class="status">

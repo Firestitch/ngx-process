@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 import { Observable, Subject, combineLatest, of, timer } from 'rxjs';
 import {
@@ -13,6 +13,7 @@ import {
 
 import { ProcessState } from '../../enums/process-state';
 import { Process } from '../../models/process';
+import { LogComponent } from '../log';
 
 
 @Component({
@@ -52,6 +53,7 @@ export class FsProcessDockComponent implements OnDestroy, OnInit {
     @Inject(MAT_DIALOG_DATA)
     private _dialogData: any,
     private _dialogRef: MatDialogRef<FsProcessDockComponent>,
+    private _dialog: MatDialog,
   ) { }
 
   public ngOnInit(): void {
@@ -62,6 +64,12 @@ export class FsProcessDockComponent implements OnDestroy, OnInit {
   public ngOnDestroy() {
     this._destroy$.next();
     this._destroy$.complete();
+  }
+
+  public viewProcess(process: Process): void {
+    this._dialog.open(LogComponent, {
+      data: { process },
+    });
   }
 
   private _listenClose(): void {

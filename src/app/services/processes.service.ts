@@ -129,6 +129,7 @@ export class FsProcesses {
               } else if (process.type === ProcessType.Run) {
                 if(typeof response === 'string') {
                   process.message = response;
+                  process.appendLog(response);
                 }
               }
             },

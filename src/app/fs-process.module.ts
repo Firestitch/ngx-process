@@ -7,7 +7,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-import { FsProcessDockComponent } from './components/dock/dock.component';
+import { FsProcessDockComponent } from './components/dock';
+import { LogComponent } from './components/log';
 
 @NgModule({
   imports: [
@@ -19,9 +20,9 @@ import { FsProcessDockComponent } from './components/dock/dock.component';
     MatButtonModule,
     MatTooltipModule,
   ],
-  exports: [],
   declarations: [
     FsProcessDockComponent,
+    LogComponent,
   ],
 })
 export class FsProcessModule { }
