@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Overlay } from '@angular/cdk/overlay';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
+import { StreamEventData } from '@firestitch/api';
 import { Queue } from '@firestitch/common';
 
 import { BehaviorSubject, EMPTY, Subject, throwError } from 'rxjs';
@@ -127,7 +128,10 @@ export class FsProcesses {
 
                 (window as any).location = response;
               } else if (process.type === ProcessType.Run) {
-                if(typeof response === 'string') {
+                if(response instanceof StreamEventData) {
+                  process.message = response.data;
+                  process.appendLog(response.data);
+                } else if(typeof response === 'string') {
                   process.message = response;
                   process.appendLog(response);
                 }
