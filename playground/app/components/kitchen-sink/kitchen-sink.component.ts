@@ -161,7 +161,7 @@ export class KitchenSinkComponent implements OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this._destroy$.next();
+    this._destroy$.next(null);
     this._destroy$.complete();
   }
 }
