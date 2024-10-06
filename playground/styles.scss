@@ -6,7 +6,7 @@
 @import "@firestitch/drawer/styles";
 @import '../src/app/styles.scss';
 
-@include fs-drawer(mat.$blue-palette);
+@include fs-drawer(mat.$m2-blue-palette);
 // TODO(v15): As of v15 mat.legacy-core no longer includes default typography styles.
 //  The following line adds:
 //    1. Default typography styles for all components
