@@ -42,7 +42,7 @@
     "@angular/router": "^18.2.7",
     "@firestitch/api": "^18.0.0",
     "@firestitch/common": "^18.0.0",
-    "@firestitch/component-tools": "^18.0.4",
+    "@firestitch/component-tools": "^18.0.12",
     "@firestitch/date": "^18.0.1",
     "@firestitch/drawer": "^18.0.0",
     "@firestitch/example": "^18.0.2",
