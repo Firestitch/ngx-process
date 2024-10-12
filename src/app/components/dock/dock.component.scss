@@ -72,16 +72,27 @@
   }
 }
 
-.header {
-  display: flex;
-  align-items: baseline;
+:host ::ng-deep {
+  .mat-mdc-dialog-title::before {
+    display: none;
+  }
+}
 
-  h2 {
-    flex: 1
+.title {
+  padding-top: 12px;
+
+  .row,
+  .close {
+    display: flex;
+    align-items: center;
+  }
+
+  .row {
+    justify-content: space-between;
   }
 
   .closing { 
-    font-size: 90%;
+    font-size: 11px;
   }
 }
 

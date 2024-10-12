@@ -14,7 +14,7 @@
           {{process.state$ | async}}
         </div>
         <ng-container *ngIf="(process.state$ | async) !== ProcessState.Running">
-          <div class="small">
+          <div class="message small">
             {{process.message$ | async}}
           </div>
         </ng-container>

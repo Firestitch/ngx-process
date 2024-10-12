@@ -1,15 +1,16 @@
-<div class="header">
-  <h2 mat-dialog-title>
+<div class="title" mat-dialog-title>
+  <div class="row">
     Processing
-  </h2>
+    <div class="close">
+      <span *ngIf="timeToClose && readyToClose$ | async" class="closing">
+        Closing in {{ closeIn$ | async }} sec
+      </span>
 
-  <span *ngIf="timeToClose && readyToClose$ | async" class="closing">
-    Closing in {{ closeIn$ | async }} sec
-  </span>
-
-  <button mat-icon-button [mat-dialog-close]="null">
-    <mat-icon matTooltip="Close">close</mat-icon>
-  </button>
+      <button mat-icon-button [mat-dialog-close]="null">
+        <mat-icon matTooltip="Close">close</mat-icon>
+      </button>
+    </div>
+  </div>
 </div>
 
 <mat-dialog-content>
