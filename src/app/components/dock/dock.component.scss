@@ -78,8 +78,14 @@
   }
 }
 
-.title {
+.title-container {
   padding-top: 12px;
+
+  .title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
   .row,
   .close {
@@ -93,11 +99,35 @@
 
   .closing { 
     font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+@media (min-width: 600px) {
+  ::ng-deep {
+    .fs-process-pane {
+      margin: 12px !important;
+    }
+  }
+}
+
+
+@media (max-width: 599px) {
+  ::ng-deep {
+    .fs-process-pane {
+      width: 100% !important;
+    }
   }
 }
 
 ::ng-deep {
   .fs-process-backdrop {
     background-color: rgb(91 82 82 / 20%) !important;
+  }
+
+  .fs-process-pane {
+    max-width: 100% !important;
   }
 }

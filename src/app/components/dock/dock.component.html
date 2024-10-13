@@ -1,6 +1,6 @@
-<div class="title" mat-dialog-title>
+<div class="title-container" mat-dialog-title>
   <div class="row">
-    Processing
+    <div class="title">Processing</div>
     <div class="close">
       <span *ngIf="timeToClose && readyToClose$ | async" class="closing">
         Closing in {{ closeIn$ | async }} sec

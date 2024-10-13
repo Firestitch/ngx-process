@@ -60,8 +60,8 @@ export class FsProcesses {
             item.process,
           ]);
         }),
-        tap((item) => {
-          this._openProcessesDialog(item.config);
+        tap(() => {
+          this._openProcessesDialog();
         }),
         tap((item) => {
           item.process.setState(ProcessState.Running);
@@ -77,7 +77,7 @@ export class FsProcesses {
       .subscribe();
   }
 
-  private _openProcessesDialog(config: ProcessConfig): void {
+  private _openProcessesDialog(): void {
     if (this._activeDialog) {
       return;
     }
@@ -88,7 +88,7 @@ export class FsProcesses {
         hasBackdrop: false,
         backdropClass: 'fs-process-backdrop',
         panelClass: 'fs-process-pane',
-        position: { bottom: '20px', right: '20px' },
+        position: { bottom: '0px', right: '0px' },
         disableClose: true,
         autoFocus: false,
         scrollStrategy: this._overlay.scrollStrategies.noop(),
