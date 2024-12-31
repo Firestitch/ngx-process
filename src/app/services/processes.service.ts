@@ -128,10 +128,10 @@ export class FsProcesses {
 
                 (window as any).location = response;
               } else if (process.type === ProcessType.Run) {
-                if(response instanceof StreamEventData) {
+                if (response instanceof StreamEventData) {
                   process.message = response.data;
                   process.appendLog(response.data);
-                } else if(typeof response === 'string') {
+                } else if (typeof response === 'string') {
                   process.message = response;
                   process.appendLog(response);
                 }
@@ -150,7 +150,7 @@ export class FsProcesses {
               message = e;
             }
 
-            process.message = `${process.name}: ${message}`;
+            process.message = message;
             process.setState(ProcessState.Failed);
 
             return throwError(e);
