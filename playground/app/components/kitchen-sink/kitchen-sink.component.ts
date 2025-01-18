@@ -50,7 +50,7 @@ export class KitchenSinkComponent implements OnDestroy {
         takeUntil(process.completed$),
       )
       .subscribe(() => {
-        process.message = `${process.message}.`;
+        process.message = `${process.message || ''}.`;
       });
 
     process

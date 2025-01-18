@@ -138,7 +138,7 @@ export class FsProcesses {
               }
             },
             complete: () => {
-              process.message = `${process.name}`;
+              process.message = 'Completed';
               process.setState(ProcessState.Success);
             },
           }),
