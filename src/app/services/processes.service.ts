@@ -52,16 +52,16 @@ export class FsProcesses {
   private _initQueueProcessing(): void {
     this._queue$
       .pipe(
-        tap((item) => {
-          item.process.setState(ProcessState.Queued);
+        tap(({ process }: { process: Process; config: ProcessConfig }) => {
+          process.setState(ProcessState.Queued);
 
           this._activeProcesses$.next([
             ...this._activeProcesses,
-            item.process,
+            process,
           ]);
         }),
-        tap(() => {
-          this._openProcessesDialog();
+        tap(({ config }: { process: Process; config: ProcessConfig }) => {
+          this._openProcessesDialog(config);
         }),
         tap((item) => {
           item.process.setState(ProcessState.Running);
@@ -77,18 +77,21 @@ export class FsProcesses {
       .subscribe();
   }
 
-  private _openProcessesDialog(): void {
+  private _openProcessesDialog(config: ProcessConfig): void {
     if (this._activeDialog) {
       return;
     }
 
+    const position = config.position === 'bottomRight' ?
+      { bottom: '0px', right: '0px' } : undefined;
+   
     this._activeDialog = this._dialog
       .open(FsProcessDockComponent, {
         width: '450px',
         hasBackdrop: false,
         backdropClass: 'fs-process-backdrop',
         panelClass: 'fs-process-pane',
-        position: { bottom: '0px', right: '0px' },
+        position,
         disableClose: true,
         autoFocus: false,
         scrollStrategy: this._overlay.scrollStrategies.noop(),
@@ -110,6 +113,11 @@ export class FsProcesses {
 
   private _pushProcessIntoQueue(process: IProcess, config: ProcessConfig): Process {
     const p = new Process(process);
+    config = {
+      ...config,
+      position: config?.position || 'bottomRight',
+    };
+
     this._queue$.next({ process: p, config });
 
     return p;

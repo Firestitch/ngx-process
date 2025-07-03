@@ -2,7 +2,7 @@
   "name": "@firestitch/process",
   "title": "Process",
   "description": "@firestitch/process",
-  "version": "18.0.5",
+  "version": "18.0.6",
   "repository": {
     "type": "git",
     "url": "https://github.com/Firestitch/ngx-process"
