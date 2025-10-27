@@ -2,22 +2,22 @@
 
 <mat-dialog-content>
   <div class="log-container">
-    <div class="fs-row.gap-xs">      
-      <ng-container *ngIf="(process.state$ | async) === ProcessState.Running">
+    <div class="fs-row.gap-xs">
+      @if ((process.state$ | async) === ProcessState.Running) {
         <mat-progress-spinner
           [diameter]="20"
           mode="indeterminate">
         </mat-progress-spinner>
-      </ng-container>
+      }
       <div>
         <div class="process-state">
           {{process.state$ | async}}
         </div>
-        <ng-container *ngIf="(process.state$ | async) !== ProcessState.Running">
+        @if ((process.state$ | async) !== ProcessState.Running) {
           <div class="message small">
             {{process.message$ | async}}
           </div>
-        </ng-container>
+        }
       </div>
     </div>
   </div>
@@ -25,11 +25,11 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button 
-      type="button"  
-      mat-button
-      color="primary"
-      mat-dialog-close>
+  <button
+    type="button"
+    mat-button
+    color="primary"
+    mat-dialog-close>
     Done
   </button>
 </mat-dialog-actions>
