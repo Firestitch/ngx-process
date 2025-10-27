@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
 import { Overlay } from '@angular/cdk/overlay';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -24,16 +24,16 @@ import { Process } from '../models/process';
   providedIn: 'root',
 })
 export class FsProcesses {
+  private _dialog = inject(MatDialog);
+  private _overlay = inject(Overlay);
+
 
   private _queue = new Queue(3);
   private _activeDialog: MatDialogRef<any>;
   private _activeProcesses$ = new BehaviorSubject<Process[]>([]);
   private _queue$ = new Subject<{ process: Process; config: ProcessConfig }>();
 
-  constructor(
-    private _dialog: MatDialog,
-    private _overlay: Overlay,
-  ) {
+  constructor() {
     this._initQueueProcessing();
   }
 

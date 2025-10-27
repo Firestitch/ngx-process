@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatDialogTitle, MatDialogClose, MatDialogContent } from '@angular/material/dialog';
 
@@ -41,6 +41,10 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
     ],
 })
 export class FsProcessDockComponent implements OnDestroy, OnInit {
+  private _dialogData = inject(MAT_DIALOG_DATA);
+  private _dialogRef = inject<MatDialogRef<FsProcessDockComponent>>(MatDialogRef);
+  private _dialog = inject(MatDialog);
+
 
   public processes$: Observable<Process[]>;
   public failed = 0;
@@ -67,13 +71,6 @@ export class FsProcessDockComponent implements OnDestroy, OnInit {
     );
 
   private _destroy$ = new Subject<void>();
-
-  constructor(
-    @Inject(MAT_DIALOG_DATA)
-    private _dialogData: any,
-    private _dialogRef: MatDialogRef<FsProcessDockComponent>,
-    private _dialog: MatDialog,
-  ) { }
 
   public ngOnInit(): void {
     this.processes$ = this._dialogData.activeProcesses$;

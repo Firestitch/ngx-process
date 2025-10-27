@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { DrawerRef, DRAWER_DATA } from '@firestitch/drawer';
 import { ExampleService } from '@firestitch/example';
 import { MatFormField } from '@angular/material/form-field';
@@ -14,12 +14,16 @@ import { MatButton } from '@angular/material/button';
     imports: [MatFormField, MatInput, FormsModule, MatButton]
 })
 export class KitchenSinkConfigureComponent {
+  drawer = inject<DrawerRef<KitchenSinkConfigureComponent>>(DrawerRef);
+  data = inject(DRAWER_DATA);
+
 
   public config;
   public example: ExampleService;
 
-  constructor(public drawer: DrawerRef<KitchenSinkConfigureComponent>,
-              @Inject(DRAWER_DATA) public data) {
+  constructor() {
+    const data = this.data;
+
     this.config = data.config;
     this.example = data.example;
   }

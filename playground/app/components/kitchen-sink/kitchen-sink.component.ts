@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, inject } from '@angular/core';
 
 import { FsApi, RequestMethod, StreamEventData } from '@firestitch/api';
 import { FsProcess } from '@firestitch/package';
@@ -19,17 +19,14 @@ import { MatButton } from '@angular/material/button';
     imports: [MatButton],
 })
 export class KitchenSinkComponent implements OnDestroy {
+  private _url = inject(TEST_URL);
+  private _process = inject(FsProcess);
+  private _api = inject(FsApi);
+
 
   public config = {};
 
   private _destroy$ = new Subject();
-
-  constructor(
-    @Inject(TEST_URL) private _url: string,
-    private _process: FsProcess,
-    private _api: FsApi,
-  ) {
-  }
 
   public exportAccounts(): void {
     const request = of({

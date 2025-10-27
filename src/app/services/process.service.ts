@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
@@ -13,10 +13,8 @@ import { FsProcesses } from './processes.service';
   providedIn: 'root',
 })
 export class FsProcess {
+  private _processes = inject(FsProcesses);
 
-  constructor(
-    private _processes: FsProcesses,
-  ) { }
 
   public setLimit(value) {
     this._processes.setLimit(value);

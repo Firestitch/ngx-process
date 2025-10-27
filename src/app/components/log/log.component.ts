@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose } from '@angular/material/dialog';
 
@@ -29,17 +29,14 @@ import { AsyncPipe } from '@angular/common';
     ],
 })
 export class LogComponent implements OnDestroy, OnInit {
+  private _dialogData = inject(MAT_DIALOG_DATA);
+  private _dialogRef = inject<MatDialogRef<LogComponent>>(MatDialogRef);
+
 
   public process: Process;
   public ProcessState = ProcessState;
 
   private _destroy$ = new Subject<void>();
-
-  constructor(
-    @Inject(MAT_DIALOG_DATA)
-    private _dialogData: any,
-    private _dialogRef: MatDialogRef<LogComponent>,
-  ) { }
 
   public ngOnInit(): void {
     this.process = this._dialogData.process;
