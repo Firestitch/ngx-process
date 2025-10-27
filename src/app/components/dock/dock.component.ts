@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatDialogTitle, MatDialogClose, MatDialogContent } from '@angular/material/dialog';
 
 import { Observable, Subject, combineLatest, of, timer } from 'rxjs';
 import {
@@ -14,12 +14,31 @@ import {
 import { ProcessState } from '../../enums/process-state';
 import { Process } from '../../models/process';
 import { LogComponent } from '../log';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 
 @Component({
-  templateUrl: './dock.component.html',
-  styleUrls: ['./dock.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './dock.component.html',
+    styleUrls: ['./dock.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        MatDialogTitle,
+        MatIconButton,
+        MatDialogClose,
+        MatIcon,
+        MatTooltip,
+        CdkScrollable,
+        MatDialogContent,
+        NgClass,
+        MatProgressSpinner,
+        AsyncPipe,
+    ],
 })
 export class FsProcessDockComponent implements OnDestroy, OnInit {
 

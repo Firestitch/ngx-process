@@ -1,4 +1,4 @@
-export { FsProcessModule } from './app/fs-process.module';
+
 
 export { FsProcess } from './app/services/process.service';
 

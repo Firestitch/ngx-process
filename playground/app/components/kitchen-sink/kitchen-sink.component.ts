@@ -7,13 +7,16 @@ import { Observable, of, Subject, timer } from 'rxjs';
 import { delay, map, takeUntil } from 'rxjs/operators';
 
 import { TEST_URL } from 'playground/app/injectors';
+import { MatButton } from '@angular/material/button';
 
 
 @Component({
-  selector: 'kitchen-sink',
-  templateUrl: './kitchen-sink.component.html',
-  styleUrls: ['./kitchen-sink.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'kitchen-sink',
+    templateUrl: './kitchen-sink.component.html',
+    styleUrls: ['./kitchen-sink.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [MatButton],
 })
 export class KitchenSinkComponent implements OnDestroy {
 
