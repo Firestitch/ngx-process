@@ -2,23 +2,25 @@
 
 <mat-dialog-content>
   <div class="log-container">
-    <div class="fs-row.gap-xs">
+    <div class="fs-row.gap-sm">
+      <div class="fs-row.gap-xs">
+        <div class="process-state">
+          <fs-chip [backgroundColor]="process.stateColor$ | async">
+            {{process.state$ | async}}
+          </fs-chip>
+        </div>
+        @if ((process.state$ | async) !== ProcessState.Running) {
+          <div class="small">
+            {{process.message$ | async}}
+          </div>
+        }
+      </div>
       @if ((process.state$ | async) === ProcessState.Running) {
         <mat-progress-spinner
           [diameter]="20"
           mode="indeterminate">
         </mat-progress-spinner>
       }
-      <div>
-        <div class="process-state">
-          {{process.state$ | async}}
-        </div>
-        @if ((process.state$ | async) !== ProcessState.Running) {
-          <div class="message small">
-            {{process.message$ | async}}
-          </div>
-        }
-      </div>
     </div>
   </div>
   <div class="log">{{process.log$ | async}}</div>

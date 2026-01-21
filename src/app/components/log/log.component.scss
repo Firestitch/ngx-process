@@ -6,3 +6,8 @@
 .process-state {
   text-transform: capitalize;
 }
+
+mat-dialog-content {
+  min-width: 400px;
+  display: block;
+}

@@ -146,12 +146,12 @@ export class FsProcesses {
               }
             },
             complete: () => {
-              process.message = 'Completed';
+              process.message = '';
               process.setState(ProcessState.Success);
             },
           }),
           catchError((e) => {
-            let message = 'Process failed';
+            let message = '';
             if (e instanceof HttpErrorResponse && e.statusText) {
               message = e.statusText;
             } else if (typeof e === 'string' && e) {

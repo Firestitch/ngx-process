@@ -1,5 +1,5 @@
 import { BehaviorSubject, Observable } from 'rxjs';
-import { filter, share } from 'rxjs/operators';
+import { filter, map, share } from 'rxjs/operators';
 
 import { ProcessState } from '../enums/process-state';
 import { ProcessType } from '../enums/process-type';
@@ -32,6 +32,26 @@ export class Process<T extends unknown = unknown> extends Observable<T> {
 
   public get state$(): Observable<ProcessState> {
     return this._state$.asObservable();
+  }
+
+  public get stateColor$(): Observable<string> {
+    return this._state$.asObservable()
+      .pipe(
+        map((state) => {
+          switch (state) {
+            case ProcessState.Running:
+              return '#e63946';
+            case ProcessState.Cancelled:
+              return '#ff8c00';
+            case ProcessState.Failed:
+              return '#dc3545';
+            case ProcessState.Success:
+              return '#28a745';
+            case ProcessState.Queued:
+              return '#6c757d';
+          }
+        }),
+      );
   }
 
   public get completed$(): Observable<any> {
