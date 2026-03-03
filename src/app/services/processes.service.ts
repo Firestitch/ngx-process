@@ -80,17 +80,23 @@ export class FsProcesses {
   }
 
   private _initDownloadQueue(): void {
+    let lastDownloadTime = 0;
     this._downloadQueue$
       .pipe(
         concatMap((url) => {
-          const a = document.createElement('a');
-          a.href = url;
-          a.target = '_blank';
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
+          const now = Date.now();
+          if (now - lastDownloadTime > 3000) {
+            (window as any).location = url;
+          } else {
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = url;
+            document.body.appendChild(iframe);
+            setTimeout(() => iframe.remove(), 10000);
+          }
+          lastDownloadTime = Date.now();
 
-          return timer(500);
+          return timer(1000);
         }),
       )
       .subscribe();
