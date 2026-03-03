@@ -6,8 +6,8 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { StreamEventData } from '@firestitch/api';
 import { Queue } from '@firestitch/common';
 
-import { BehaviorSubject, EMPTY, Subject, throwError } from 'rxjs';
-import { catchError, take, tap } from 'rxjs/operators';
+import { BehaviorSubject, EMPTY, Subject, throwError, timer } from 'rxjs';
+import { catchError, concatMap, take, tap } from 'rxjs/operators';
 
 
 import { HttpErrorResponse } from '@angular/common/http';
@@ -32,9 +32,11 @@ export class FsProcesses {
   private _activeDialog: MatDialogRef<any>;
   private _activeProcesses$ = new BehaviorSubject<Process[]>([]);
   private _queue$ = new Subject<{ process: Process; config: ProcessConfig }>();
+  private _downloadQueue$ = new Subject<string>();
 
   constructor() {
     this._initQueueProcessing();
+    this._initDownloadQueue();
   }
 
   private get _activeProcesses(): Process[] {
@@ -72,6 +74,22 @@ export class FsProcesses {
           console.error(error);
 
           return EMPTY;
+        }),
+      )
+      .subscribe();
+  }
+
+  private _initDownloadQueue(): void {
+    this._downloadQueue$
+      .pipe(
+        concatMap((url) => {
+          const a = document.createElement('a');
+          a.href = url;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+
+          return timer(500);
         }),
       )
       .subscribe();
@@ -134,7 +152,7 @@ export class FsProcesses {
                   return throwError('Download URL invalid');
                 }
 
-                (window as any).location = response;
+                this._downloadQueue$.next(response);
               } else if (process.type === ProcessType.Run) {
                 if (response instanceof StreamEventData) {
                   process.message = response.data;
