@@ -15,6 +15,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { FsProcessDockComponent } from '../components/dock/dock.component';
 import { ProcessState } from '../enums/process-state';
 import { ProcessType } from '../enums/process-type';
+import { formatError } from '../helpers';
 import { ProcessConfig } from '../interfaces';
 import { IProcess } from '../interfaces/process';
 import { Process } from '../models/process';
@@ -177,13 +178,20 @@ export class FsProcesses {
           }),
           catchError((e) => {
             let message = '';
-            if (e instanceof HttpErrorResponse && e.statusText) {
-              message = e.statusText;
+            if (e instanceof HttpErrorResponse) {
+              message = e.error?.message || e.statusText || '';
             } else if (typeof e === 'string' && e) {
               message = e;
+            } else if (e?.message) {
+              message = e.message;
             }
 
+            // The dock has room for the message and nothing else. The reason —
+            // the exception, its trace, the statement that broke — goes to the
+            // log, which is the only place with room to read it, and goes there
+            // beside the output rather than appended to it
             process.message = message;
+            process.error = formatError(e);
             process.setState(ProcessState.Failed);
 
             return throwError(e);

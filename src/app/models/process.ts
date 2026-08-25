@@ -4,6 +4,7 @@ import { filter, map, share } from 'rxjs/operators';
 import { ProcessState } from '../enums/process-state';
 import { ProcessType } from '../enums/process-type';
 import { IProcess } from '../interfaces/process';
+import { IProcessError } from '../interfaces/process-error';
 
 
 export class Process<T extends unknown = unknown> extends Observable<T> {
@@ -11,6 +12,7 @@ export class Process<T extends unknown = unknown> extends Observable<T> {
   private _state$ = new BehaviorSubject(ProcessState.Queued);
   private _message$ = new BehaviorSubject<string>(null);
   private _log$ = new BehaviorSubject<string>('');
+  private _error$ = new BehaviorSubject<IProcessError>(null);
 
   private _type: ProcessType;
   private _name: string;
@@ -80,8 +82,25 @@ export class Process<T extends unknown = unknown> extends Observable<T> {
     return this._log$.asObservable();
   }
 
+  // What the process wrote and why it stopped are two different things, and a
+  // log that runs them together reads as one — the output of a stream that then
+  // failed would sit inside the failure
+  public get error(): IProcessError {
+    return this._error$.value;
+  }
+
+  public set error(error: IProcessError) {
+    this._error$.next(error);
+  }
+
+  public get error$(): Observable<IProcessError> {
+    return this._error$.asObservable();
+  }
+
   public appendLog(message: string): void {
-    this._log$.next(`${this._log$.value}\n${message}`);
+    this._log$.next(
+      this._log$.value ? `${this._log$.value}\n${message}` : message,
+    );
   }
 
   public get message(): string {

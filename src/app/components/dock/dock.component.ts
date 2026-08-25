@@ -95,7 +95,10 @@ export class FsProcessDockComponent implements OnDestroy, OnInit {
   }
 
   public viewProcess(process: Process): void {
+    // Wide, because what lands in the log of a failed process is a stack trace
     this._dialog.open(LogComponent, {
+      width: '900px',
+      maxWidth: '95vw',
       data: { process },
     });
   }

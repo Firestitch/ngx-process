@@ -138,9 +138,11 @@ export class KitchenSinkComponent implements OnDestroy {
   }
 
   public apiKeepAliveError(): void {
+    // Keep alive on its own answers 200 — the error the example is named for
+    // only happens when the request is also told to throw
     this._process.run(
       'API Keep Alive Error',
-      this._api.get(`${this._url}?keepAlive=3`),
+      this._api.get(`${this._url}?keepAlive=3&exception=There was an error`),
     );
   }
 

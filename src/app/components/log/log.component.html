@@ -23,7 +23,68 @@
       }
     </div>
   </div>
-  <div class="log">{{process.log$ | async}}</div>
+
+  @if (process.log$ | async; as log) {
+    <div class="log">{{ log }}</div>
+  }
+
+  @if (process.error$ | async; as error) {
+    <div class="error">
+      <div class="error-label">{{ error.exceptions?.length ? 'Exception' : 'Error' }}</div>
+
+      <div class="error-body">
+        @if (error.status || error.url) {
+          <div class="request">
+            @if (error.status) {
+              <span class="status">{{ error.status }}</span>
+            }
+            @if (error.url) {
+              <span class="url">{{ error.url }}</span>
+            }
+          </div>
+        }
+
+        @for (exception of error.exceptions; track $index) {
+          <div class="exception">
+            @if (exception.caption || exception.class) {
+              <div class="name">
+                @if (exception.caption) {
+                  <span class="caption">{{ exception.caption }}</span>
+                }
+                {{ exception.class }}
+                @if (exception.code) {
+                  <span class="code">{{ exception.code }}</span>
+                }
+              </div>
+            }
+
+            @if (exception.message) {
+              <div class="message">{{ exception.message }}</div>
+            }
+
+            @for (dump of exception.dumps; track $index) {
+              <div class="dump">{{ dump }}</div>
+            }
+
+            @if (exception.frames.length) {
+              <div class="trace">
+                @if (exception.root) {
+                  <div class="root">Root {{ exception.root }}</div>
+                }
+                @for (frame of exception.frames; track $index) {
+                  <div>{{ frame }}</div>
+                }
+              </div>
+            }
+          </div>
+        }
+
+        @if (error.text) {
+          <div class="text">{{ error.text }}</div>
+        }
+      </div>
+    </div>
+  }
 </mat-dialog-content>
 
 <mat-dialog-actions>

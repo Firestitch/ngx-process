@@ -8,5 +8,5 @@ export { ProcessState } from './app/enums/process-state';
 
 export { Process } from './app/models/process';
 
-export { ProcessConfig } from './app/interfaces';
+export { ProcessConfig, IProcessError, IProcessException } from './app/interfaces';
 

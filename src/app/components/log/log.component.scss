@@ -1,6 +1,148 @@
+$mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+$red: #b23a48;
+$red-dark: #8a1c2b;
+
 .log,
+.error {
+  margin-top: 15px;
+}
+
+// What the process wrote and why it stopped are two blocks of a different kind.
+// They need pulling apart only when both are there — a failure that never wrote
+// anything sits directly under the state
+.log + .error {
+  margin-top: 24px;
+}
+
+.log {
+  padding: 10px 12px;
+  border-radius: 4px;
+  border: 1px solid #e0e0e0;
+  background-color: #fafafa;
+  font-family: $mono;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #444;
+  // A stack frame is one line: scroll it sideways rather than wrap it, which
+  // turns a readable trace into a paragraph
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.error-label {
+  margin-bottom: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: $red;
+}
+
+.error-body {
+  padding: 12px 14px;
+  border-radius: 4px;
+  border: 1px solid #f0c2c6;
+  background-color: #fdf3f4;
+}
+
+// What was asked for, above a line, kept off the trace it has nothing to do with
+.request {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid rgba($red, 0.15);
+}
+
+.status,
+.code {
+  flex: none;
+  padding: 1px 6px;
+  border-radius: 3px;
+  background-color: rgba($red, 0.12);
+  color: $red-dark;
+  font-family: $mono;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.url {
+  font-family: $mono;
+  font-size: 11px;
+  color: #8a7a7d;
+  // A url is one long unbreakable token — let it wrap rather than widen the box
+  overflow-wrap: anywhere;
+}
+
+.exception + .exception {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba($red, 0.15);
+}
+
+.exception > :first-child {
+  margin-top: 0;
+}
+
+.name {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-family: $mono;
+  font-size: 13px;
+  font-weight: 600;
+  color: $red-dark;
+}
+
+.caption {
+  font-weight: 500;
+  color: #b07079;
+}
+
 .message {
-  white-space: pre-wrap;
+  margin-top: 4px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #3f3335;
+}
+
+.dump {
+  margin: 10px 0;
+  padding-left: 10px;
+  border-left: 2px solid rgba($red, 0.25);
+  font-family: $mono;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #5c4a4d;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+// The part that matters least, so the part that recedes — it is read last, and
+// only once the class and the message have not answered the question
+.trace {
+  font-family: $mono;
+  font-size: 12px;
+  line-height: 1.7;
+  color: #7d6e71;
+  // Each frame is already its own line: hold it on that line and scroll it
+  // sideways rather than wrap it into a paragraph
+  white-space: nowrap;
+  overflow-x: auto;
+}
+
+.root {
+  color: #a89a9d;
+}
+
+.text {
+  font-family: $mono;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #5c4a4d;
+  white-space: pre;
+  overflow-x: auto;
 }
 
 .process-state {
