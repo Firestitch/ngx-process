@@ -10,12 +10,10 @@ import { BehaviorSubject, EMPTY, Subject, throwError, timer } from 'rxjs';
 import { catchError, concatMap, take, tap } from 'rxjs/operators';
 
 
-import { HttpErrorResponse } from '@angular/common/http';
-
 import { FsProcessDockComponent } from '../components/dock/dock.component';
 import { ProcessState } from '../enums/process-state';
 import { ProcessType } from '../enums/process-type';
-import { formatError } from '../helpers';
+import { errorMessage, formatError } from '../helpers';
 import { ProcessConfig } from '../interfaces';
 import { IProcess } from '../interfaces/process';
 import { Process } from '../models/process';
@@ -177,14 +175,7 @@ export class FsProcesses {
             },
           }),
           catchError((e) => {
-            let message = '';
-            if (e instanceof HttpErrorResponse) {
-              message = e.error?.message || e.statusText || '';
-            } else if (typeof e === 'string' && e) {
-              message = e;
-            } else if (e?.message) {
-              message = e.message;
-            }
+            const message = errorMessage(e);
 
             // The dock has room for the message and nothing else. The reason —
             // the exception, its trace, the statement that broke — goes to the

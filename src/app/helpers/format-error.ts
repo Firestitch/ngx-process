@@ -2,6 +2,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 import { IProcessError, IProcessException } from '../interfaces/process-error';
 
+import { errorMessage } from './error-message';
+
 
 interface TraceFrame {
   call: string;
@@ -34,20 +36,23 @@ const FRAME = /^(.*?)\s+(?:in|on)\s+(.*?)\s*@\s*(\d*)\s*$/;
  */
 export function formatError(error: any): IProcessError {
   const payload = error instanceof HttpErrorResponse ? error.error : error;
-
-  // A body that could not be parsed as json arrives as the raw text it was
-  if (typeof payload === 'string') {
-    return { text: payload.trim() };
-  }
-
   const result: IProcessError = {};
-  const message = payload?.message ||
-    (error instanceof HttpErrorResponse ? error.statusText : error?.message);
 
   if (error instanceof HttpErrorResponse) {
     result.status = `${error.status}`;
     result.url = error.url || '';
   }
+
+  // A body that could not be parsed as json arrives as the raw text it was —
+  // a gateway error page, most often. The status and the url are the only parts
+  // of it worth reading, so they are set above rather than lost to this return
+  if (typeof payload === 'string') {
+    result.text = payload.trim();
+
+    return result;
+  }
+
+  const message = errorMessage(error);
 
   if (payload?.exception) {
     result.exceptions = _exceptions(payload.exception, message);
